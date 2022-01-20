@@ -10,8 +10,4 @@ ext {
     isNsfw = true
 }
 
-dependencies {
-    implementation project(':lib-ratelimit')
-}
-
 apply from: "$rootDir/common.gradle"

@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.extension.all.mangadex
 
 import android.util.Log
 import eu.kanade.tachiyomi.extension.all.mangadex.dto.ImageReportDto
-import eu.kanade.tachiyomi.lib.ratelimit.RateLimitInterceptor
 import eu.kanade.tachiyomi.network.POST
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -20,14 +19,6 @@ import uy.kohesive.injekt.injectLazy
  */
 
 private val coverRegex = Regex("""/images/.*\.jpg""")
-private val baseInterceptor = RateLimitInterceptor(3)
-
-val mdRateLimitInterceptor = Interceptor { chain ->
-    return@Interceptor when (chain.request().url.toString().contains(coverRegex)) {
-        true -> chain.proceed(chain.request())
-        false -> baseInterceptor.intercept(chain)
-    }
-}
 
 /**
  * Interceptor to post to md@home for MangaDex Stats

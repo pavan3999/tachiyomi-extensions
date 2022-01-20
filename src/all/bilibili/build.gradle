@@ -9,8 +9,4 @@ ext {
     extVersionCode = 4
 }
 
-dependencies {
-    implementation project(':lib-ratelimit')
-}
-
 apply from: "$rootDir/common.gradle"
