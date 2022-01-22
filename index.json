@@ -1494,16 +1494,64 @@
   {
     "name": "Tachiyomi: Genkan.io",
     "pkg": "eu.kanade.tachiyomi.extension.all.genkanio",
-    "apk": "tachiyomi-all.genkanio-v1.2.3.apk",
+    "apk": "tachiyomi-all.genkanio-v1.2.4.apk",
     "lang": "all",
-    "code": 3,
-    "version": "1.2.3",
+    "code": 4,
+    "version": "1.2.4",
     "nsfw": 0,
     "sources": [
       {
         "name": "Genkan.io",
         "lang": "all",
         "id": "8489093995473763661",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "ar",
+        "id": "4742227436581396837",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "en",
+        "id": "5196956977808015230",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "fr",
+        "id": "736163939699849169",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "pl",
+        "id": "7282261471150995718",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "pt-BR",
+        "id": "3529387625018470746",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "ru",
+        "id": "1386452981538627059",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "es",
+        "id": "3332240131882614135",
+        "baseUrl": "https://genkan.io"
+      },
+      {
+        "name": "Genkan.io",
+        "lang": "tr",
+        "id": "4764122775398725861",
         "baseUrl": "https://genkan.io"
       }
     ]
@@ -2593,10 +2641,10 @@
   {
     "name": "Tachiyomi: MangaDex",
     "pkg": "eu.kanade.tachiyomi.extension.all.mangadex",
-    "apk": "tachiyomi-all.mangadex-v1.2.152.apk",
+    "apk": "tachiyomi-all.mangadex-v1.2.153.apk",
     "lang": "all",
-    "code": 152,
-    "version": "1.2.152",
+    "code": 153,
+    "version": "1.2.153",
     "nsfw": 1,
     "sources": [
       {
@@ -5071,17 +5119,17 @@
   {
     "name": "Tachiyomi: MangaLink",
     "pkg": "eu.kanade.tachiyomi.extension.ar.mangalink",
-    "apk": "tachiyomi-ar.mangalink-v1.2.5.apk",
+    "apk": "tachiyomi-ar.mangalink-v1.2.6.apk",
     "lang": "ar",
-    "code": 5,
-    "version": "1.2.5",
+    "code": 6,
+    "version": "1.2.6",
     "nsfw": 0,
     "sources": [
       {
         "name": "MangaLink",
         "lang": "ar",
         "id": "2024895279481891604",
-        "baseUrl": "https://mangalink.cc"
+        "baseUrl": "http://135.181.209.99"
       }
     ]
   },
