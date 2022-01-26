@@ -27,10 +27,10 @@
   {
     "name": "Tachiyomi: Bato.to",
     "pkg": "eu.kanade.tachiyomi.extension.all.batoto",
-    "apk": "tachiyomi-all.batoto-v1.2.20.apk",
+    "apk": "tachiyomi-all.batoto-v1.2.21.apk",
     "lang": "all",
-    "code": 20,
-    "version": "1.2.20",
+    "code": 21,
+    "version": "1.2.21",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -307,13 +307,13 @@
       },
       {
         "name": "Bato.to",
-        "lang": "zh-rHK",
+        "lang": "zh-Hans",
         "id": "2818874445640189582",
         "baseUrl": "https://bato.to"
       },
       {
         "name": "Bato.to",
-        "lang": "zh-rTW",
+        "lang": "zh-Hant",
         "id": "38886079663327225",
         "baseUrl": "https://bato.to"
       },
@@ -2237,14 +2237,45 @@
     ]
   },
   {
-    "name": "Tachiyomi: Komga",
-    "pkg": "eu.kanade.tachiyomi.extension.all.komga",
-    "apk": "tachiyomi-all.komga-v1.2.37.apk",
+    "name": "Tachiyomi: Kavita",
+    "pkg": "eu.kanade.tachiyomi.extension.all.kavita",
+    "apk": "tachiyomi-all.kavita-v1.2.1.apk",
     "lang": "all",
-    "code": 37,
-    "version": "1.2.37",
+    "code": 1,
+    "version": "1.2.1",
     "nsfw": 0,
     "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Kavita (1)",
+        "lang": "all",
+        "id": "7266875667263635239",
+        "baseUrl": ""
+      },
+      {
+        "name": "Kavita (2)",
+        "lang": "all",
+        "id": "3764816291200082561",
+        "baseUrl": ""
+      },
+      {
+        "name": "Kavita (3)",
+        "lang": "all",
+        "id": "778637366235559582",
+        "baseUrl": ""
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Komga",
+    "pkg": "eu.kanade.tachiyomi.extension.all.komga",
+    "apk": "tachiyomi-all.komga-v1.2.38.apk",
+    "lang": "all",
+    "code": 38,
+    "version": "1.2.38",
+    "nsfw": 0,
+    "hasReadme": 1,
     "hasChangelog": 1,
     "sources": [
       {
@@ -2423,13 +2454,13 @@
   {
     "name": "Tachiyomi: Luscious",
     "pkg": "eu.kanade.tachiyomi.extension.all.luscious",
-    "apk": "tachiyomi-all.luscious-v1.2.17.apk",
+    "apk": "tachiyomi-all.luscious-v1.2.18.apk",
     "lang": "all",
-    "code": 17,
-    "version": "1.2.17",
+    "code": 18,
+    "version": "1.2.18",
     "nsfw": 1,
-    "hasReadme": 0,
-    "hasChangelog": 0,
+    "hasReadme": 1,
+    "hasChangelog": 1,
     "sources": [
       {
         "name": "Luscious",
@@ -2502,176 +2533,6 @@
         "lang": "all",
         "id": "4625881812440927464",
         "baseUrl": "https://www.luscious.net"
-      }
-    ]
-  },
-  {
-    "name": "Tachiyomi: Luscious (API)",
-    "pkg": "eu.kanade.tachiyomi.extension.all.lusciousapi",
-    "apk": "tachiyomi-all.lusciousapi-v1.2.15.apk",
-    "lang": "all",
-    "code": 15,
-    "version": "1.2.15",
-    "nsfw": 1,
-    "hasReadme": 0,
-    "hasChangelog": 0,
-    "sources": [
-      {
-        "name": "Luscious (API)",
-        "lang": "en",
-        "id": "978919223017582430",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "ja",
-        "id": "6839595532949731945",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "es",
-        "id": "3985725222003808537",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "it",
-        "id": "3489922928707608726",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "de",
-        "id": "8823895914878828030",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "fr",
-        "id": "6475169983714709109",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "zh",
-        "id": "7687242672509685693",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "ko",
-        "id": "277722818538182156",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "other",
-        "id": "6334604580105860150",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "pt-BR",
-        "id": "7982365826055835382",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "th",
-        "id": "1948190694262925123",
-        "baseUrl": "https://api.luscious.net"
-      },
-      {
-        "name": "Luscious (API)",
-        "lang": "all",
-        "id": "7121199751397515117",
-        "baseUrl": "https://api.luscious.net"
-      }
-    ]
-  },
-  {
-    "name": "Tachiyomi: Luscious (Members)",
-    "pkg": "eu.kanade.tachiyomi.extension.all.lusciousmembers",
-    "apk": "tachiyomi-all.lusciousmembers-v1.2.15.apk",
-    "lang": "all",
-    "code": 15,
-    "version": "1.2.15",
-    "nsfw": 1,
-    "hasReadme": 0,
-    "hasChangelog": 0,
-    "sources": [
-      {
-        "name": "Luscious (Members)",
-        "lang": "en",
-        "id": "4268472469265053315",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "ja",
-        "id": "2887471822167690257",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "es",
-        "id": "8473398629193728851",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "it",
-        "id": "753058298973211393",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "de",
-        "id": "5915047960489418301",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "fr",
-        "id": "4018220437258376679",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "zh",
-        "id": "2074825612319528293",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "ko",
-        "id": "2624469453877452558",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "other",
-        "id": "1463317725788639294",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "pt-BR",
-        "id": "6917849530594229844",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "th",
-        "id": "1986924930929317217",
-        "baseUrl": "https://members.luscious.net"
-      },
-      {
-        "name": "Luscious (Members)",
-        "lang": "all",
-        "id": "7342361465161848669",
-        "baseUrl": "https://members.luscious.net"
       }
     ]
   },
@@ -3005,10 +2866,10 @@
   {
     "name": "Tachiyomi: MangaPark v3",
     "pkg": "eu.kanade.tachiyomi.extension.all.mangapark",
-    "apk": "tachiyomi-all.mangapark-v1.2.13.apk",
+    "apk": "tachiyomi-all.mangapark-v1.2.14.apk",
     "lang": "all",
-    "code": 13,
-    "version": "1.2.13",
+    "code": 14,
+    "version": "1.2.14",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -3279,13 +3140,13 @@
       },
       {
         "name": "MangaPark v3",
-        "lang": "zh-rHK",
+        "lang": "zh-Hans",
         "id": "6306867705763005424",
         "baseUrl": "https://v35.mangapark.net"
       },
       {
         "name": "MangaPark v3",
-        "lang": "zh-rTW",
+        "lang": "zh-Hant",
         "id": "4563855043528673539",
         "baseUrl": "https://v35.mangapark.net"
       },
@@ -4065,10 +3926,10 @@
   {
     "name": "Tachiyomi: nHentai.com (unoriginal)",
     "pkg": "eu.kanade.tachiyomi.extension.all.nhentaicom",
-    "apk": "tachiyomi-all.nhentaicom-v1.2.2.apk",
+    "apk": "tachiyomi-all.nhentaicom-v1.2.3.apk",
     "lang": "all",
-    "code": 2,
-    "version": "1.2.2",
+    "code": 3,
+    "version": "1.2.3",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -4111,7 +3972,7 @@
       },
       {
         "name": "nHentai.com (unoriginal)",
-        "lang": "cz",
+        "lang": "cs",
         "id": "1144495813995437124",
         "baseUrl": "https://nhentai.com"
       },
@@ -4496,10 +4357,10 @@
   {
     "name": "Tachiyomi: Toomics",
     "pkg": "eu.kanade.tachiyomi.extension.all.toomics",
-    "apk": "tachiyomi-all.toomics-v1.2.6.apk",
+    "apk": "tachiyomi-all.toomics-v1.2.7.apk",
     "lang": "all",
-    "code": 6,
-    "version": "1.2.6",
+    "code": 7,
+    "version": "1.2.7",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -4511,20 +4372,20 @@
         "baseUrl": "https://global.toomics.com"
       },
       {
-        "name": "Toomics (Only free chapters) (简体)",
-        "lang": "zh",
+        "name": "Toomics (Only free chapters)",
+        "lang": "zh-Hans",
         "id": "2191753978421234924",
         "baseUrl": "https://global.toomics.com"
       },
       {
-        "name": "Toomics (Only free chapters) (繁體)",
-        "lang": "zh",
+        "name": "Toomics (Only free chapters)",
+        "lang": "zh-Hant",
         "id": "371640888113435809",
         "baseUrl": "https://global.toomics.com"
       },
       {
-        "name": "Toomics (Only free chapters) (LA)",
-        "lang": "es",
+        "name": "Toomics (Only free chapters)",
+        "lang": "es-419",
         "id": "7362369816539610504",
         "baseUrl": "https://global.toomics.com"
       },
@@ -4637,10 +4498,10 @@
   {
     "name": "Tachiyomi: Webtoons.com Translations",
     "pkg": "eu.kanade.tachiyomi.extension.all.webtoonstranslate",
-    "apk": "tachiyomi-all.webtoonstranslate-v1.2.3.apk",
+    "apk": "tachiyomi-all.webtoonstranslate-v1.2.4.apk",
     "lang": "all",
-    "code": 3,
-    "version": "1.2.3",
+    "code": 4,
+    "version": "1.2.4",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -4653,13 +4514,13 @@
       },
       {
         "name": "Webtoons.com Translations",
-        "lang": "zh-hans",
+        "lang": "zh-Hans",
         "id": "5196522547754842244",
         "baseUrl": "https://translate.webtoons.com"
       },
       {
         "name": "Webtoons.com Translations",
-        "lang": "zh-hant",
+        "lang": "zh-Hant",
         "id": "1016181401146312893",
         "baseUrl": "https://translate.webtoons.com"
       },
@@ -5385,6 +5246,25 @@
         "lang": "ar",
         "id": "964048798769065340",
         "baseUrl": "https://mangaproz.com"
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: MangaRabic",
+    "pkg": "eu.kanade.tachiyomi.extension.ar.mangarabic",
+    "apk": "tachiyomi-ar.mangarabic-v1.2.15.apk",
+    "lang": "ar",
+    "code": 15,
+    "version": "1.2.15",
+    "nsfw": 0,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "MangaRabic",
+        "lang": "ar",
+        "id": "909469885483358759",
+        "baseUrl": "https://mangarabic.com"
       }
     ]
   },
@@ -16498,10 +16378,10 @@
   {
     "name": "Tachiyomi: Kiryuu",
     "pkg": "eu.kanade.tachiyomi.extension.id.kiryuu",
-    "apk": "tachiyomi-id.kiryuu-v1.2.15.apk",
+    "apk": "tachiyomi-id.kiryuu-v1.2.16.apk",
     "lang": "id",
-    "code": 15,
-    "version": "1.2.15",
+    "code": 16,
+    "version": "1.2.16",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -18232,10 +18112,10 @@
   {
     "name": "Tachiyomi: Argos Scan",
     "pkg": "eu.kanade.tachiyomi.extension.pt.argosscan",
-    "apk": "tachiyomi-pt.argosscan-v1.2.19.apk",
+    "apk": "tachiyomi-pt.argosscan-v1.2.20.apk",
     "lang": "pt-BR",
-    "code": 19,
-    "version": "1.2.19",
+    "code": 20,
+    "version": "1.2.20",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -20056,10 +19936,10 @@
   {
     "name": "Tachiyomi: MangaClub",
     "pkg": "eu.kanade.tachiyomi.extension.ru.mangaclub",
-    "apk": "tachiyomi-ru.mangaclub-v1.2.5.apk",
+    "apk": "tachiyomi-ru.mangaclub-v1.2.7.apk",
     "lang": "ru",
-    "code": 5,
-    "version": "1.2.5",
+    "code": 7,
+    "version": "1.2.7",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
