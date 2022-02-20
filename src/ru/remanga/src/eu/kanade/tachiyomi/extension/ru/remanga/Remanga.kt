@@ -8,6 +8,7 @@ import MangaDetDto
 import MyLibraryDto
 import PageDto
 import PageWrapperDto
+import PublisherDto
 import SeriesWrapperDto
 import TagsDto
 import UserDto
@@ -121,6 +122,7 @@ class Remanga : ConfigurableSource, HttpSource() {
             val mangas = page.content.map {
                 it.title.toSManga()
             }
+
             return MangasPage(mangas, page.props.page < page.props.total_pages)
         } else {
             val page = json.decodeFromString<PageWrapperDto<LibraryDto>>(response.body!!.string())
@@ -138,7 +140,7 @@ class Remanga : ConfigurableSource, HttpSource() {
     private fun LibraryDto.toSManga(): SManga =
         SManga.create().apply {
             // Do not change the title name to ensure work with a multilingual catalog!
-            title = en_name
+            title = if (isEng.equals("rus")) rus_name else en_name
             url = "/api/titles/$dir/"
             thumbnail_url = if (img.high.isNotEmpty()) {
                 baseUrl + img.high
@@ -185,6 +187,9 @@ class Remanga : ConfigurableSource, HttpSource() {
                 }
                 is AgeList -> filter.state.forEach { age ->
                     if (age.state) {
+                        if ((age.id == "2") and (USER_ID == "")) {
+                            throw Exception("Для просмотра 18+ контента необходима авторизация через WebView")
+                        }
                         url.addQueryParameter("age_limit", age.id)
                     }
                 }
@@ -196,7 +201,7 @@ class Remanga : ConfigurableSource, HttpSource() {
                 is MyList -> {
                     if (filter.state > 0) {
                         if (USER_ID == "") {
-                            throw Exception("Пользователь не найден")
+                            throw Exception("Пользователь не найден, необходима авторизация через WebView")
                         }
                         val TypeQ = getMyList()[filter.state].id
                         val UserProfileUrl = "$baseUrl/api/users/$USER_ID/bookmarks/?type=$TypeQ&page=$page".toHttpUrl().newBuilder()
@@ -219,10 +224,10 @@ class Remanga : ConfigurableSource, HttpSource() {
         }
     }
 
-    private fun parseType(type: TagsDto): TagsDto {
+    private fun parseType(type: TagsDto): String {
         return when (type.name) {
-            "Западный комикс" -> TagsDto(type.id, "Комикс")
-            else -> type
+            "Западный комикс" -> "Комикс"
+            else -> type.name
         }
     }
     private fun parseAge(age_limit: Int): String {
@@ -251,15 +256,16 @@ class Remanga : ConfigurableSource, HttpSource() {
         val o = this
         return SManga.create().apply {
             // Do not change the title name to ensure work with a multilingual catalog!
-            title = en_name
+            title = if (isEng.equals("rus")) rus_name else en_name
             url = "/api/titles/$dir/"
             thumbnail_url = baseUrl + img.high
             var altName = ""
             if (another_name.isNotEmpty()) {
                 altName = "Альтернативные названия:\n" + another_name + "\n\n"
             }
-            this.description = rus_name + "\n" + ratingStar + " " + ratingValue + " (голосов: " + count_rating + ")\n" + altName + Jsoup.parse(o.description).text()
-            genre = (genres + categories + parseType(type)).joinToString { it.name } + ", " + parseAge(age_limit)
+            val mediaNameLanguage = if (isEng.equals("rus")) en_name else rus_name
+            this.description = mediaNameLanguage + "\n" + ratingStar + " " + ratingValue + " (голосов: " + count_rating + ")\n" + altName + Jsoup.parse(o.description).text()
+            genre = parseType(type) + ", " + parseAge(age_limit) + ", " + (genres + categories).joinToString { it.name }
             status = parseStatus(o.status.id)
         }
     }
@@ -278,7 +284,7 @@ class Remanga : ConfigurableSource, HttpSource() {
                 }
             }
             .map { response ->
-                (if (warnLogin) manga.apply { description = "Авторизуйтесь для просмотра списка глав" } else mangaDetailsParse(response))
+                (if (warnLogin) manga.apply { description = "Для просмотра 18+ контента необходима авторизация через WebView" } else mangaDetailsParse(response))
                     .apply {
                         initialized = true
                     }
@@ -317,19 +323,28 @@ class Remanga : ConfigurableSource, HttpSource() {
                 Observable.error(Exception("Лицензировано - Нет глав"))
             }
             else -> {
-                val branchId = branch.maxByOrNull { selector(it) }!!.id
-                client.newCall(chapterListRequest(branchId))
-                    .asObservableSuccess()
-                    .map { response ->
-                        chapterListParse(response)
-                    }
+                val selectedBranch = branch.maxByOrNull { selector(it) }!!
+                return (1..(selectedBranch.count_chapters / 100 + 1)).map {
+                    val response = chapterListRequest(selectedBranch.id, it)
+                    chapterListParse(response, selectedBranch.publishers)
+                }.let { Observable.just(it.flatten()) }
             }
         }
     }
 
-    private fun chapterListRequest(branch: Long): Request {
-        return GET("$baseUrl/api/titles/chapters/?branch_id=$branch", headers)
-    }
+    private fun chapterListRequest(branch: Long, page: Number): Response =
+        client.newCall(
+            GET(
+                "$baseUrl/api/titles/chapters/?branch_id=$branch&page=$page&count=100",
+                headers
+            )
+        ).execute().run {
+            if (!isSuccessful) {
+                close()
+                throw Exception("HTTP error $code")
+            }
+            this
+        }
 
     @SuppressLint("DefaultLocale")
     private fun chapterName(book: BookDto): String {
@@ -340,7 +355,8 @@ class Remanga : ConfigurableSource, HttpSource() {
         return chapterName
     }
 
-    override fun chapterListParse(response: Response): List<SChapter> {
+    override fun chapterListParse(response: Response): List<SChapter> = throw NotImplementedError("Unused")
+    private fun chapterListParse(response: Response, publishers: List<PublisherDto>): List<SChapter> {
         var chapters = json.decodeFromString<SeriesWrapperDto<List<BookDto>>>(response.body!!.string()).content
         if (!preferences.getBoolean(PAID_PREF, false)) {
             chapters = chapters.filter { !it.is_paid or (it.is_bought == true) }
@@ -351,8 +367,8 @@ class Remanga : ConfigurableSource, HttpSource() {
                 name = chapterName(chapter)
                 url = "/api/titles/chapters/${chapter.id}"
                 date_upload = parseDate(chapter.upload_date)
-                scanlator = if (chapter.publishers.isNotEmpty()) {
-                    chapter.publishers.joinToString { it.name }
+                scanlator = if (publishers.isNotEmpty()) {
+                    publishers.joinToString { it.name }
                 } else null
             }
         }
@@ -631,7 +647,7 @@ class Remanga : ConfigurableSource, HttpSource() {
         MyListUnit("Брошено ", "3"),
         MyListUnit("Не интересно ", "5")
     )
-
+    private var isEng: String? = preferences.getString(LANGUAGE_PREF, "eng")
     override fun setupPreferenceScreen(screen: androidx.preference.PreferenceScreen) {
         val domainPref = ListPreference(screen.context).apply {
             key = DOMAIN_PREF
@@ -650,6 +666,20 @@ class Remanga : ConfigurableSource, HttpSource() {
                     e.printStackTrace()
                     false
                 }
+            }
+        }
+        val titleLanguagePref = ListPreference(screen.context).apply {
+            key = LANGUAGE_PREF
+            title = LANGUAGE_PREF_Title
+            entries = arrayOf("Английский", "Русский")
+            entryValues = arrayOf("eng", "rus")
+            summary = "%s"
+            setDefaultValue("eng")
+            setOnPreferenceChangeListener { _, newValue ->
+                val titleLanguage = preferences.edit().putString(LANGUAGE_PREF, newValue as String).commit()
+                val warning = "Если язык обложки не изменился очистите базу данных в приложении (Настройки -> Дополнительно -> Очистить базу данных)"
+                Toast.makeText(screen.context, warning, Toast.LENGTH_LONG).show()
+                titleLanguage
             }
         }
         val paidChapterShow = androidx.preference.CheckBoxPreference(screen.context).apply {
@@ -675,6 +705,7 @@ class Remanga : ConfigurableSource, HttpSource() {
             }
         }
         screen.addPreference(domainPref)
+        screen.addPreference(titleLanguagePref)
         screen.addPreference(paidChapterShow)
         screen.addPreference(bookmarksHide)
     }
@@ -690,6 +721,9 @@ class Remanga : ConfigurableSource, HttpSource() {
 
         private const val DOMAIN_PREF = "REMangaDomain"
         private const val DOMAIN_PREF_Title = "Выбор домена"
+
+        private const val LANGUAGE_PREF = "ReMangaTitleLanguage"
+        private const val LANGUAGE_PREF_Title = "Выбор языка на обложке"
 
         private const val PAID_PREF = "PaidChapter"
         private const val PAID_PREF_Title = "Показывать платные главы"
