@@ -2252,10 +2252,10 @@
   {
     "name": "Tachiyomi: Komga",
     "pkg": "eu.kanade.tachiyomi.extension.all.komga",
-    "apk": "tachiyomi-all.komga-v1.2.38.apk",
+    "apk": "tachiyomi-all.komga-v1.2.39.apk",
     "lang": "all",
-    "code": 38,
-    "version": "1.2.38",
+    "code": 39,
+    "version": "1.2.39",
     "nsfw": 0,
     "hasReadme": 1,
     "hasChangelog": 1,
@@ -11386,10 +11386,10 @@
   {
     "name": "Tachiyomi: Manhuaga",
     "pkg": "eu.kanade.tachiyomi.extension.en.manhuaga",
-    "apk": "tachiyomi-en.manhuaga-v1.2.16.apk",
+    "apk": "tachiyomi-en.manhuaga-v1.2.17.apk",
     "lang": "en",
-    "code": 16,
-    "version": "1.2.16",
+    "code": 17,
+    "version": "1.2.17",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -15013,25 +15013,6 @@
     ]
   },
   {
-    "name": "Tachiyomi: TOPTOON+",
-    "pkg": "eu.kanade.tachiyomi.extension.en.toptoonplus",
-    "apk": "tachiyomi-en.toptoonplus-v1.2.4.apk",
-    "lang": "en",
-    "code": 4,
-    "version": "1.2.4",
-    "nsfw": 1,
-    "hasReadme": 1,
-    "hasChangelog": 0,
-    "sources": [
-      {
-        "name": "TOPTOON+",
-        "lang": "en",
-        "id": "6351996264463708982",
-        "baseUrl": "https://toptoonplus.com"
-      }
-    ]
-  },
-  {
     "name": "Tachiyomi: TreeManga",
     "pkg": "eu.kanade.tachiyomi.extension.en.treemanga",
     "apk": "tachiyomi-en.treemanga-v1.2.16.apk",
@@ -17964,25 +17945,6 @@
     ]
   },
   {
-    "name": "Tachiyomi: ManhwaID",
-    "pkg": "eu.kanade.tachiyomi.extension.id.manhwaid",
-    "apk": "tachiyomi-id.manhwaid-v1.2.15.apk",
-    "lang": "id",
-    "code": 15,
-    "version": "1.2.15",
-    "nsfw": 1,
-    "hasReadme": 0,
-    "hasChangelog": 0,
-    "sources": [
-      {
-        "name": "ManhwaID",
-        "lang": "id",
-        "id": "4936118780439985359",
-        "baseUrl": "https://manhwaid.org"
-      }
-    ]
-  },
-  {
     "name": "Tachiyomi: MasterKomik",
     "pkg": "eu.kanade.tachiyomi.extension.id.masterkomik",
     "apk": "tachiyomi-id.masterkomik-v1.2.14.apk",
@@ -19079,13 +19041,13 @@
         "name": "ManaToki",
         "lang": "ko",
         "id": "2526381983439079467",
-        "baseUrl": "https://manatoki151.net"
+        "baseUrl": "https://manatoki152.net"
       },
       {
         "name": "NewToki",
         "lang": "ko",
         "id": "1977818283770282459",
-        "baseUrl": "https://newtoki151.com"
+        "baseUrl": "https://newtoki152.com"
       }
     ]
   },
@@ -21277,10 +21239,10 @@
   {
     "name": "Tachiyomi: Remanga",
     "pkg": "eu.kanade.tachiyomi.extension.ru.remanga",
-    "apk": "tachiyomi-ru.remanga-v1.2.44.apk",
+    "apk": "tachiyomi-ru.remanga-v1.2.46.apk",
     "lang": "ru",
-    "code": 44,
-    "version": "1.2.44",
+    "code": 46,
+    "version": "1.2.46",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -22822,10 +22784,10 @@
   {
     "name": "Tachiyomi: Jinmantiantang",
     "pkg": "eu.kanade.tachiyomi.extension.zh.jinmantiantang",
-    "apk": "tachiyomi-zh.jinmantiantang-v1.2.19.apk",
+    "apk": "tachiyomi-zh.jinmantiantang-v1.2.20.apk",
     "lang": "zh",
-    "code": 19,
-    "version": "1.2.19",
+    "code": 20,
+    "version": "1.2.20",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -23126,10 +23088,10 @@
   {
     "name": "Tachiyomi: Yimmh",
     "pkg": "eu.kanade.tachiyomi.extension.zh.yimmh",
-    "apk": "tachiyomi-zh.yimmh-v1.2.3.apk",
+    "apk": "tachiyomi-zh.yimmh-v1.2.4.apk",
     "lang": "zh",
-    "code": 3,
-    "version": "1.2.3",
+    "code": 4,
+    "version": "1.2.4",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
