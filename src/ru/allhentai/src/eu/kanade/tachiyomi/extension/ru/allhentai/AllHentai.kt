@@ -48,7 +48,15 @@ class AllHentai : ConfigurableSource, ParsedHttpSource() {
     private val rateLimitInterceptor = RateLimitInterceptor(2)
 
     override val client: OkHttpClient = network.client.newBuilder()
-        .addNetworkInterceptor(rateLimitInterceptor).build()
+        .addNetworkInterceptor(rateLimitInterceptor)
+        .addInterceptor { chain ->
+            val originalRequest = chain.request()
+            val response = chain.proceed(originalRequest)
+            if (originalRequest.url.toString().contains("internal/redirect") or (response.code == 301))
+                throw Exception("Манга переехала на другой адрес/ссылку!")
+            response
+        }
+        .build()
 
     override fun popularMangaSelector() = "div.tile"
 
@@ -178,10 +186,11 @@ class AllHentai : ConfigurableSource, ParsedHttpSource() {
 
     private fun chapterFromElement(element: Element, manga: SManga): SChapter {
         val urlElement = element.select("a").first()
+        val chapterInf = element.select(".item-data").first()
         val urlText = urlElement.text()
 
         val chapter = SChapter.create()
-        chapter.setUrlWithoutDomain(urlElement.attr("href") + "?mtr=1")
+        chapter.setUrlWithoutDomain(urlElement.attr("href") + "?mtr=true") // mtr is 18+ skip
 
         var translators = ""
         val translatorElement = urlElement.attr("title")
@@ -205,6 +214,8 @@ class AllHentai : ConfigurableSource, ParsedHttpSource() {
             chapter.name = chapter.name.substringAfter("…").trim()
         }
 
+        chapter.chapter_number = chapterInf.attr("num").toFloat() / 10
+
         chapter.date_upload = element.select("td.d-none").last()?.text()?.let {
             try {
                 SimpleDateFormat("dd.MM.yy", Locale.US).parse(it)?.time ?: 0L
@@ -220,20 +231,16 @@ class AllHentai : ConfigurableSource, ParsedHttpSource() {
     }
 
     override fun prepareNewChapter(chapter: SChapter, manga: SManga) {
-        val basic = Regex("""\s*([0-9]+)(\s-\s)([0-9]+)\s*""")
         val extra = Regex("""\s*([0-9]+\sЭкстра)\s*""")
         val single = Regex("""\s*Сингл\s*""")
         when {
-            basic.containsMatchIn(chapter.name) -> {
-                basic.find(chapter.name)?.let {
-                    val number = it.groups[3]?.value!!
-                    chapter.chapter_number = number.toFloat()
-                }
+            extra.containsMatchIn(chapter.name) -> {
+                chapter.name = chapter.name.replaceFirst(" ", " - " + chapter.chapter_number.toString() + " ")
             }
-            extra.containsMatchIn(chapter.name) -> // Extra chapters doesn't contain chapter number
-                chapter.chapter_number = -2f
-            single.containsMatchIn(chapter.name) -> // Oneshoots, doujinshi and other mangas with one chapter
-                chapter.chapter_number = 1f
+
+            single.containsMatchIn(chapter.name) -> {
+                chapter.name = chapter.chapter_number.toString() + " " + chapter.name
+            }
         }
     }
 
