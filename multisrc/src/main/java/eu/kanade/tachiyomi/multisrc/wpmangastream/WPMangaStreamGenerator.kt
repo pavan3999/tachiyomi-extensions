@@ -13,7 +13,7 @@ class WPMangaStreamGenerator : ThemeSourceGenerator {
     override val baseVersionCode: Int = 13
 
     override val sources = listOf(
-        MultiLang("Asura Scans", "https://www.asurascans.com", listOf("en", "tr"), className = "AsuraScansFactory", pkgName = "asurascans", overrideVersionCode = 10),
+        MultiLang("Asura Scans", "https://www.asurascans.com", listOf("en", "tr"), className = "AsuraScansFactory", pkgName = "asurascans", overrideVersionCode = 11),
         SingleLang("Infernal Void Scans", "https://infernalvoidscans.com", "en", overrideVersionCode = 3),
         SingleLang("KlanKomik", "https://klankomik.com", "id", overrideVersionCode = 1),
         SingleLang("Kombatch", "https://kombatch.com", "id"),
@@ -30,11 +30,11 @@ class WPMangaStreamGenerator : ThemeSourceGenerator {
         SingleLang("MangaIndonesia", "https://mangaindonesia.net", "id"),
         SingleLang("GoGoManga", "https://gogomanga.org", "en"),
         SingleLang("GURU Komik", "https://gurukomik.com", "id"),
-        SingleLang("Shea Manga", "http://sheamanga.my.id", "id", overrideVersionCode = 2),
+        SingleLang("Shea Manga", "http://sheamanga.my.id", "id", overrideVersionCode = 3),
         SingleLang("Komik AV", "https://komikav.com", "id", overrideVersionCode = 1),
         SingleLang("Komik Cast", "https://komikcast.com", "id", overrideVersionCode = 9),
         SingleLang("West Manga", "https://westmanga.info", "id", overrideVersionCode = 1),
-        SingleLang("MangaSwat", "https://swatmanga.co", "ar", overrideVersionCode = 4),
+        SingleLang("MangaSwat", "https://swatmanga.co", "ar", overrideVersionCode = 6),
         SingleLang("Manga Raw.org", "https://mangaraw.org", "ja", className = "MangaRawOrg", overrideVersionCode = 1),
         SingleLang("Manga Pro Z", "https://mangaprotm.com", "ar", overrideVersionCode = 1),
         SingleLang("Mihentai", "https://mihentai.com", "en", isNsfw = true, overrideVersionCode = 1),

@@ -10,7 +10,7 @@ class MadaraGenerator : ThemeSourceGenerator {
 
     override val themeClass = "Madara"
 
-    override val baseVersionCode: Int = 15
+    override val baseVersionCode: Int = 16
 
     override val sources = listOf(
         MultiLang("Leviatan Scans", "https://leviatanscans.com", listOf("en", "es"), className = "LeviatanScansFactory", overrideVersionCode = 9),
@@ -51,7 +51,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("BL Comics", "https://blcomics.net", "en", isNsfw = true),
         SingleLang("BL Manhwa Club", "https://blmanhwa.club", "pt-BR", isNsfw = true, className = "BlManhwaClub", overrideVersionCode = 2),
         SingleLang("Bakaman", "https://bakaman.net", "th", overrideVersionCode = 1),
-        SingleLang("Banana Crítica", "https://cillylovers.com", "pt-BR", isNsfw = true, pkgName = "bananamecanica", className = "BananaCritica", overrideVersionCode = 3),
+        SingleLang("Banana Cítrica", "https://dinastiacilly.com", "pt-BR", isNsfw = true, pkgName = "bananamecanica", className = "BananaCitrica", overrideVersionCode = 4),
         SingleLang("BestManga", "https://bestmanga.club", "ru", overrideVersionCode = 1),
         SingleLang("BestManhua", "https://bestmanhua.com", "en", overrideVersionCode = 2),
         SingleLang("Block Manga", "https://blockmanga.com", "en", overrideVersionCode = 1),
@@ -95,7 +95,6 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("FastManhwa", "https://fastmanhwa.net", "en", isNsfw = true, overrideVersionCode = 2),
         SingleLang("Final Scans", "https://finalscans.com", "pt-BR", isNsfw = true, overrideVersionCode = 1),
         SingleLang("Fiz Manga", "https://fizmanga.com", "en"),
-        SingleLang("Fleur Blanche", "https://fleurscan.com", "pt-BR", isNsfw = true, overrideVersionCode = 1),
         SingleLang("Fox White", "https://foxwhite.com.br", "pt-BR"),
         SingleLang("Free Manga", "https://freemanga.me", "en", isNsfw = true, overrideVersionCode = 3),
         SingleLang("FreeWebtoonCoins", "https://freewebtooncoins.com", "en", overrideVersionCode = 1),
@@ -155,7 +154,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("KlikManga", "https://klikmanga.id", "id", overrideVersionCode = 2),
         SingleLang("Kokomanga", "https://kokomanga.com", "en"),
         SingleLang("Kun Manga", "https://kunmanga.com", "en", overrideVersionCode = 1),
-        SingleLang("LHTranslation", "https://lhtranslation.net", "en"),
+        SingleLang("LHTranslation", "https://lhtranslation.net", "en", overrideVersionCode = 1),
         SingleLang("Lara Manga", "https://laramanga.com", "en"),
         SingleLang("Latest Manga", "https://latestmanga.net", "en", overrideVersionCode = 1),
         SingleLang("Levelerscans", "https://levelerscans.xyz", "en", overrideVersionCode = 1),
@@ -361,7 +360,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("Pornwha", "https://pornwha.com", "en", isNsfw = true, overrideVersionCode = 1),
         SingleLang("Prisma Scans", "https://prismascans.net", "pt-BR", overrideVersionCode = 2),
         SingleLang("Projeto Scanlator", "https://projetoscanlator.com", "pt-BR", overrideVersionCode = 3),
-        SingleLang("Pirulito Rosa", "https://pirulitorosa.site", "pt-BR", isNsfw =  true),
+        SingleLang("Pirulito Rosa", "https://pirulitorosa.site", "pt-BR", isNsfw = true),
         SingleLang("QueensManga ملكات المانجا", "https://queensmanga.com", "ar", className = "QueensManga", overrideVersionCode = 1),
         SingleLang("Rachel Scanlator", "https://rachelscanlator.com", "pt-BR", isNsfw = true, overrideVersionCode = 2),
         SingleLang("RagnarokScan", "https://ragnarokscan.com", "es"),
@@ -456,7 +455,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("XManga", "https://xmanga.io", "en", isNsfw = true),
         SingleLang("XuN Scans", "https://xunscans.xyz", "en", overrideVersionCode = 2),
         SingleLang("Yaoi Hentai", "https://yaoihentai.me", "en", isNsfw = true),
-        SingleLang("Yaoi Toshokan", "https://yaoitoshokan.net", "pt-BR", isNsfw = true, overrideVersionCode = 3),
+        SingleLang("Yaoi Toshokan", "https://yaoitoshokan.net", "pt-BR", isNsfw = true, overrideVersionCode = 4),
         SingleLang("Yaoi.mobi", "https://yaoi.mobi", "en", isNsfw = true, className = "YaoiManga", pkgName = "yaoimanga", overrideVersionCode = 4),
         SingleLang("YaoiScan", "https://yaoiscan.com", "en", isNsfw = true),
         SingleLang("YaoiToon", "https://yaoitoon.com", "en", isNsfw = true),
