@@ -2552,10 +2552,10 @@
   {
     "name": "Tachiyomi: MangaDex",
     "pkg": "eu.kanade.tachiyomi.extension.all.mangadex",
-    "apk": "tachiyomi-all.mangadex-v1.2.155.apk",
+    "apk": "tachiyomi-all.mangadex-v1.2.156.apk",
     "lang": "all",
-    "code": 155,
-    "version": "1.2.155",
+    "code": 156,
+    "version": "1.2.156",
     "nsfw": 1,
     "hasReadme": 1,
     "hasChangelog": 0,
@@ -16779,6 +16779,25 @@
     ]
   },
   {
+    "name": "Tachiyomi: Arcane scan",
+    "pkg": "eu.kanade.tachiyomi.extension.fr.arcanescan",
+    "apk": "tachiyomi-fr.arcanescan-v1.2.12.apk",
+    "lang": "fr",
+    "code": 12,
+    "version": "1.2.12",
+    "nsfw": 0,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Arcane scan",
+        "lang": "fr",
+        "id": "645948055480249558",
+        "baseUrl": "https://arcanescan.fr"
+      }
+    ]
+  },
+  {
     "name": "Tachiyomi: FR Scan",
     "pkg": "eu.kanade.tachiyomi.extension.fr.frscan",
     "apk": "tachiyomi-fr.frscan-v1.2.6.apk",
@@ -19655,10 +19674,10 @@
   {
     "name": "Tachiyomi: Gekkou Scans",
     "pkg": "eu.kanade.tachiyomi.extension.pt.gekkouscan",
-    "apk": "tachiyomi-pt.gekkouscan-v1.2.14.apk",
+    "apk": "tachiyomi-pt.gekkouscan-v1.2.15.apk",
     "lang": "pt-BR",
-    "code": 14,
-    "version": "1.2.14",
+    "code": 15,
+    "version": "1.2.15",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -19667,7 +19686,7 @@
         "name": "Gekkou Scans",
         "lang": "pt-BR",
         "id": "283011527490839966",
-        "baseUrl": "https://gekkouscans.com.br"
+        "baseUrl": "https://gekkou.com.br"
       }
     ]
   },
@@ -21080,10 +21099,10 @@
   {
     "name": "Tachiyomi: HentaiLib",
     "pkg": "eu.kanade.tachiyomi.extension.ru.libhentai",
-    "apk": "tachiyomi-ru.libhentai-v1.2.7.apk",
+    "apk": "tachiyomi-ru.libhentai-v1.2.8.apk",
     "lang": "ru",
-    "code": 7,
-    "version": "1.2.7",
+    "code": 8,
+    "version": "1.2.8",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -21099,10 +21118,10 @@
   {
     "name": "Tachiyomi: MangaLib",
     "pkg": "eu.kanade.tachiyomi.extension.ru.libmanga",
-    "apk": "tachiyomi-ru.libmanga-v1.2.63.apk",
+    "apk": "tachiyomi-ru.libmanga-v1.2.64.apk",
     "lang": "ru",
-    "code": 63,
-    "version": "1.2.63",
+    "code": 64,
+    "version": "1.2.64",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -21251,10 +21270,10 @@
   {
     "name": "Tachiyomi: Mintmanga",
     "pkg": "eu.kanade.tachiyomi.extension.ru.mintmanga",
-    "apk": "tachiyomi-ru.mintmanga-v1.2.40.apk",
+    "apk": "tachiyomi-ru.mintmanga-v1.2.41.apk",
     "lang": "ru",
-    "code": 40,
-    "version": "1.2.40",
+    "code": 41,
+    "version": "1.2.41",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -21327,10 +21346,10 @@
   {
     "name": "Tachiyomi: Remanga",
     "pkg": "eu.kanade.tachiyomi.extension.ru.remanga",
-    "apk": "tachiyomi-ru.remanga-v1.2.46.apk",
+    "apk": "tachiyomi-ru.remanga-v1.2.47.apk",
     "lang": "ru",
-    "code": 46,
-    "version": "1.2.46",
+    "code": 47,
+    "version": "1.2.47",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -21403,10 +21422,10 @@
   {
     "name": "Tachiyomi: WayManga",
     "pkg": "eu.kanade.tachiyomi.extension.ru.waymanga",
-    "apk": "tachiyomi-ru.waymanga-v1.2.2.apk",
+    "apk": "tachiyomi-ru.waymanga-v1.2.3.apk",
     "lang": "ru",
-    "code": 2,
-    "version": "1.2.2",
+    "code": 3,
+    "version": "1.2.3",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -22967,10 +22986,10 @@
   {
     "name": "Tachiyomi: Jinmantiantang",
     "pkg": "eu.kanade.tachiyomi.extension.zh.jinmantiantang",
-    "apk": "tachiyomi-zh.jinmantiantang-v1.2.21.apk",
+    "apk": "tachiyomi-zh.jinmantiantang-v1.2.22.apk",
     "lang": "zh",
-    "code": 21,
-    "version": "1.2.21",
+    "code": 22,
+    "version": "1.2.22",
     "nsfw": 1,
     "hasReadme": 0,
     "hasChangelog": 0,
