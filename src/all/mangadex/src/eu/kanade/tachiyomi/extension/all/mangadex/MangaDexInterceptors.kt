@@ -11,7 +11,6 @@ import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.Response
-import okhttp3.internal.closeQuietly
 import uy.kohesive.injekt.injectLazy
 
 /**
@@ -52,16 +51,14 @@ class MdAtHomeReportInterceptor(
 
                 val jsonString = json.encodeToString(result)
 
-                val postResult = client.newCall(
-                    POST(
-                        MDConstants.atHomePostUrl,
-                        headers,
-                        jsonString.toRequestBody("application/json".toMediaType())
-                    )
-                )
                 try {
-                    val body = postResult.execute()
-                    body.closeQuietly()
+                    client.newCall(
+                        POST(
+                            MDConstants.atHomePostUrl,
+                            headers,
+                            jsonString.toRequestBody("application/json".toMediaType())
+                        )
+                    ).execute().close()
                 } catch (e: Exception) {
                     Log.e("MangaDex", "Error trying to POST report to MD@Home: ${e.message}")
                 }
