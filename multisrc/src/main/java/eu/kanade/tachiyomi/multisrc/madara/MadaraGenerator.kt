@@ -10,7 +10,7 @@ class MadaraGenerator : ThemeSourceGenerator {
 
     override val themeClass = "Madara"
 
-    override val baseVersionCode: Int = 17
+    override val baseVersionCode: Int = 20
 
     override val sources = listOf(
         MultiLang("Leviatan Scans", "https://leviatanscans.com", listOf("en", "es"), className = "LeviatanScansFactory", overrideVersionCode = 9),
@@ -49,7 +49,6 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("Asura Raw", "https://asuraraw.com", "en", overrideVersionCode = 1),
         SingleLang("Atikrost", "https://atikrost.com", "tr", overrideVersionCode = 1),
         SingleLang("Azora", "https://azoraworld.com", "ar", overrideVersionCode = 3),
-        SingleLang("BL Comics", "https://blcomics.net", "en", isNsfw = true),
         SingleLang("BL Manhwa Club", "https://blmanhwa.club", "pt-BR", isNsfw = true, className = "BlManhwaClub", overrideVersionCode = 2),
         SingleLang("Bakaman", "https://bakaman.net", "th", overrideVersionCode = 1),
         SingleLang("Banana Cítrica", "https://dinastiacilly.com", "pt-BR", isNsfw = true, pkgName = "bananamecanica", className = "BananaCitrica", overrideVersionCode = 4),
@@ -372,6 +371,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("Reset Scans", "https://reset-scans.com", "en", overrideVersionCode = 5),
         SingleLang("Rh2PlusManga", "https://www.rh2plusmanga.com", "th", overrideVersionCode = 3),
         SingleLang("Rüya Manga", "https://www.ruyamanga.com", "tr", className = "RuyaManga", overrideVersionCode = 1),
+        SingleLang("RWBY Scan", "https://rwbyscan.site", "pt-BR", isNsfw = true, className = "RwbyScan"),
         SingleLang("S2Manga", "https://s2manga.com", "en", overrideVersionCode = 1),
         SingleLang("SISI GELAP", "https://sigel.xyz", "id", overrideVersionCode = 3),
         SingleLang("SamuraiScan", "https://samuraiscan.com", "es", overrideVersionCode = 1),
@@ -403,6 +403,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("TeenManhua", "https://teenmanhua.com", "en"),
         SingleLang("The Beginning After The End", "https://www.thebeginningaftertheend.fr", "fr"),
         SingleLang("The Guild", "https://theguildscans.com", "en"),
+        SingleLang("The Sugar", "https://thesugarscan.com", "pt-BR"),
         SingleLang("TheFluffyHangoutGroup", "https://www.fluffyhangout.club", "en", overrideVersionCode = 2),
         SingleLang("Three Queens Scanlator", "https://tqscan.com.br", "pt-BR", overrideVersionCode = 3),
         SingleLang("Tiempo de webeo", "https://tiempodewebeo.com", "es", className = "TiempoDeWebeo", isNsfw = true),
@@ -456,6 +457,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("Yuri Verso", "https://yuri.live", "pt-BR", overrideVersionCode = 3),
         SingleLang("Zinmanga", "https://zinmanga.com", "en", overrideVersionCode = 1),
         SingleLang("Zinmanhwa", "https://zinmanhwa.com", "en"),
+        SingleLang("ZombieLand Saga Scans", "https://zombiland.com.br", "pt-BR", isNsfw = true),
         SingleLang("ZuttoManga", "https://zuttomanga.com", "en", overrideVersionCode = 1),
         SingleLang("hManhwa", "https://hmanhwa.com", "en", isNsfw = true, overrideVersionCode = 1),
         SingleLang("Çizgi Roman Arşivi", "https://cizgiromanarsivi.com", "tr", className = "CizgiRomanArsivi"),
