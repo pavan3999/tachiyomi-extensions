@@ -4,7 +4,6 @@ import eu.kanade.tachiyomi.extension.en.xcalibrscans.interceptor.MirrorImageInte
 import eu.kanade.tachiyomi.extension.en.xcalibrscans.interceptor.SplittedImageInterceptor
 import eu.kanade.tachiyomi.extension.en.xcalibrscans.interceptor.prepareMirrorImageForInterceptor
 import eu.kanade.tachiyomi.extension.en.xcalibrscans.interceptor.prepareSplittedImageForInterceptor
-import eu.kanade.tachiyomi.lib.ratelimit.RateLimitInterceptor
 import eu.kanade.tachiyomi.multisrc.wpmangastream.WPMangaStream
 import eu.kanade.tachiyomi.source.model.Page
 import kotlinx.serialization.json.Json
@@ -22,7 +21,6 @@ class xCaliBRScans : WPMangaStream("xCaliBR Scans", "https://xcalibrscans.com", 
     override val client: OkHttpClient = network.cloudflareClient.newBuilder()
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
-        .addNetworkInterceptor(RateLimitInterceptor(2))
         .addNetworkInterceptor(SplittedImageInterceptor())
         .addNetworkInterceptor(MirrorImageInterceptor())
         .build()
