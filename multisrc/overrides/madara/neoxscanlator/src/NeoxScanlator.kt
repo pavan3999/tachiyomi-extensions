@@ -9,18 +9,26 @@ import eu.kanade.tachiyomi.BuildConfig
 import eu.kanade.tachiyomi.lib.ratelimit.RateLimitInterceptor
 import eu.kanade.tachiyomi.multisrc.madara.Madara
 import eu.kanade.tachiyomi.network.GET
+import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.network.asObservable
 import eu.kanade.tachiyomi.source.ConfigurableSource
+import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
+import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
+import okhttp3.Call
 import okhttp3.Headers
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
+import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import okhttp3.Response
 import rx.Observable
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
 import java.text.SimpleDateFormat
 import java.util.Locale
+import java.util.UUID
 import java.util.concurrent.TimeUnit
 import kotlin.Exception
 
@@ -36,7 +44,8 @@ class NeoxScanlator :
     override val client: OkHttpClient = network.cloudflareClient.newBuilder()
         .connectTimeout(1, TimeUnit.MINUTES)
         .readTimeout(1, TimeUnit.MINUTES)
-        .addInterceptor(RateLimitInterceptor(1, 2, TimeUnit.SECONDS))
+        .addInterceptor(::titleCollectionIntercept)
+        .addInterceptor(RateLimitInterceptor(1, 3, TimeUnit.SECONDS))
         .build()
 
     override val altNameSelector = ".post-content_item:contains(Alternativo) .summary-content"
@@ -49,26 +58,96 @@ class NeoxScanlator :
         preferences.getString(BASE_URL_PREF_KEY, DEFAULT_BASE_URL)!!
     }
 
+    private var titleCollectionPath: String? = null
+
     override fun headersBuilder(): Headers.Builder = super.headersBuilder()
         .add("Accept", ACCEPT)
         .add("Accept-Language", ACCEPT_LANGUAGE)
         .add("Referer", REFERER)
 
-    // Sometimes the site changes the manga URL. This override will
-    // add an error instead of the HTTP 404 to inform the user to
-    // migrate from Neox to Neox to update the URL.
+    override fun popularMangaParse(response: Response): MangasPage {
+        val popularPage = super.popularMangaParse(response)
+
+        titleCollectionPath = popularPage.mangas.firstOrNull()?.url
+            ?.removePrefix("/")
+            ?.removeSuffix("/")
+            ?.substringBeforeLast("/")
+
+        return popularPage
+    }
+
+    override fun latestUpdatesParse(response: Response): MangasPage {
+        val latestPage = super.latestUpdatesParse(response)
+
+        titleCollectionPath = latestPage.mangas.firstOrNull()?.url
+            ?.removePrefix("/")
+            ?.removeSuffix("/")
+            ?.substringBeforeLast("/")
+
+        return latestPage
+    }
+
+    override fun searchMangaParse(response: Response): MangasPage {
+        val searchPage = super.searchMangaParse(response)
+
+        titleCollectionPath = searchPage.mangas.firstOrNull()?.url
+            ?.removePrefix("/")
+            ?.removeSuffix("/")
+            ?.substringBeforeLast("/")
+
+        return searchPage
+    }
+
     override fun fetchMangaDetails(manga: SManga): Observable<SManga> {
         return client.newCall(mangaDetailsRequest(manga))
-            .asObservable()
-            .doOnNext { response ->
-                if (!response.isSuccessful) {
-                    response.close()
-                    throw Exception(if (response.code == 404) MIGRATION_MESSAGE else "HTTP error ${response.code}")
-                }
-            }
+            .asCustomObservable()
             .map { response ->
                 mangaDetailsParse(response).apply { initialized = true }
             }
+    }
+
+    override fun mangaDetailsRequest(manga: SManga): Request {
+        val titleSlug = manga.url
+            .removeSuffix("/")
+            .substringAfterLast("/")
+        val fixedPath = titleCollectionPath ?: TITLE_PATH_PLACEHOLDER
+
+        return GET("$baseUrl/$fixedPath/$titleSlug", headers)
+    }
+
+    override fun fetchChapterList(manga: SManga): Observable<List<SChapter>> {
+        return client.newCall(chapterListRequest(manga))
+            .asCustomObservable()
+            .map(::chapterListParse)
+    }
+
+    override fun chapterListRequest(manga: SManga): Request = mangaDetailsRequest(manga)
+
+    override fun xhrChaptersRequest(mangaUrl: String): Request {
+        val xhrHeaders = headersBuilder()
+            .add("Referer", baseUrl)
+            .add("X-Requested-With", "XMLHttpRequest")
+            .build()
+
+        val titleSlug = mangaUrl
+            .substringAfter(baseUrl)
+            .removeSuffix("/")
+            .substringAfterLast("/")
+        val fixedPath = titleCollectionPath ?: TITLE_PATH_PLACEHOLDER
+
+        return POST("$baseUrl/$fixedPath/$titleSlug/ajax/chapters", xhrHeaders)
+    }
+
+    override fun pageListRequest(chapter: SChapter): Request {
+        val chapterUrl = chapter.url.toHttpUrlOrNull()
+            ?: return super.pageListRequest(chapter)
+
+        val chapterSlug = chapterUrl.pathSegments
+            .takeLast(3)
+            .joinToString("/")
+        val fixedPath = titleCollectionPath ?: TITLE_PATH_PLACEHOLDER
+
+        return GET("$baseUrl/$fixedPath/$chapterSlug", headers)
     }
 
     override fun imageRequest(page: Page): Request {
@@ -106,9 +185,59 @@ class NeoxScanlator :
         screen.addPreference(baseUrlPref)
     }
 
+    private fun titleCollectionIntercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+
+        if (!request.url.toString().contains(TITLE_PATH_PLACEHOLDER)) {
+            return chain.proceed(request)
+        }
+
+        val titlePathResult = runCatching {
+            val popularResponse = chain.proceed(popularMangaRequest(1))
+            val popularPage = popularMangaParse(popularResponse)
+
+            popularPage.mangas.firstOrNull()?.url
+                ?.removePrefix("/")
+                ?.removeSuffix("/")
+                ?.substringBeforeLast("/")
+        }
+
+        titleCollectionPath = titlePathResult.getOrNull()
+
+        val fixedUrl = request.url.toString()
+            .replace(TITLE_PATH_PLACEHOLDER, titleCollectionPath ?: "manga")
+
+        val fixedRequest = request.newBuilder()
+            .url(fixedUrl)
+            .build()
+
+        return chain.proceed(fixedRequest)
+    }
+
+    private fun Call.asCustomObservable(): Observable<Response> {
+        return asObservable().doOnNext { response ->
+            if (!response.isSuccessful) {
+                response.close()
+                val message = if (response.code == 404 || response.code == 403)
+                    MIGRATION_MESSAGE else "HTTP error ${response.code}"
+                throw Exception(message)
+            }
+
+            if (response.request.url.toString() == "$baseUrl/" && response.code == 200) {
+                response.close()
+                throw Exception(MIGRATION_MESSAGE)
+            }
+
+            if (!response.headers["Content-Type"]!!.contains("text/html")) {
+                response.close()
+                throw Exception(MIGRATION_MESSAGE)
+            }
+        }
+    }
+
     companion object {
-        private const val MIGRATION_MESSAGE = "O URL deste mangá mudou. " +
-            "Faça a migração do Neox para o Neox para atualizar a URL."
+        private const val MIGRATION_MESSAGE = "A URL deste título mudou. " +
+            "Faça a migração da Neox para a Neox para atualizar a URL."
 
         private const val ACCEPT = "text/html,application/xhtml+xml,application/xml;q=0.9," +
             "image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9"
@@ -123,5 +252,7 @@ class NeoxScanlator :
             "extensão, esta configuração será apagada."
 
         private const val RESTART_TACHIYOMI = "Reinicie o Tachiyomi para aplicar as configurações."
+
+        private val TITLE_PATH_PLACEHOLDER = UUID.randomUUID().toString()
     }
 }

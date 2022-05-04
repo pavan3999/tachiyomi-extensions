@@ -8,6 +8,7 @@ import androidx.preference.PreferenceScreen
 import eu.kanade.tachiyomi.lib.ratelimit.RateLimitInterceptor
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.POST
+import eu.kanade.tachiyomi.network.asObservable
 import eu.kanade.tachiyomi.network.asObservableSuccess
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.model.Filter
@@ -37,7 +38,6 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
 import okhttp3.ResponseBody.Companion.toResponseBody
-import org.jsoup.nodes.Element
 import rx.Observable
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
@@ -63,8 +63,8 @@ class LibManga : ConfigurableSource, HttpSource() {
         val originalRequest = chain.request()
         val response = chain.proceed(originalRequest)
         val urlRequest = originalRequest.url.toString()
-        val possibleType = urlRequest.substringAfterLast("/").split(".")
-        return if (!urlRequest.contains(baseUrl) and (possibleType.size == 2)) {
+        val possibleType = urlRequest.substringAfterLast("/").substringBefore("?").split(".")
+        return if (urlRequest.contains("/chapters/") and (possibleType.size == 2)) {
             val realType = possibleType[1]
             val image = response.body?.byteString()?.toResponseBody("image/$realType".toMediaType())
             response.newBuilder().body(image).build()
@@ -84,33 +84,10 @@ class LibManga : ConfigurableSource, HttpSource() {
     override val baseUrl: String = domain.toString()
 
     override fun headersBuilder() = Headers.Builder().apply {
+        // User-Agent required for authorization through third-party accounts (mobile version for correct display in WebView)
+        add("User-Agent", "Mozilla/5.0 (Linux; Android 10; SM-G980F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36")
         add("Accept", "image/webp,*/*;q=0.8")
         add("Referer", baseUrl)
-    }
-
-    override fun latestUpdatesRequest(page: Int) = GET(baseUrl, headers)
-
-    private val latestUpdatesSelector = "div.updates__item"
-
-    override fun latestUpdatesParse(response: Response): MangasPage {
-        val elements = response.asJsoup().select(latestUpdatesSelector)
-        val latestMangas = elements?.map { latestUpdatesFromElement(it) }
-        if (latestMangas != null)
-            return MangasPage(latestMangas, false) // TODO: use API
-        return MangasPage(emptyList(), false)
-    }
-
-    private fun latestUpdatesFromElement(element: Element): SManga {
-        val manga = SManga.create()
-        element.select("div.cover").first().let { img ->
-            manga.thumbnail_url = baseUrl + img.attr("data-src").replace("_thumb", "_250x350")
-        }
-
-        element.select("a").first().let { link ->
-            manga.setUrlWithoutDomain(link.attr("href"))
-            manga.title = if (isEng.equals("rus") || element.select(".updates__name_rus").isNullOrEmpty()) { element.select("h4").first().text() } else element.select(".updates__name_rus").first().text()
-        }
-        return manga
     }
 
     private var csrfToken: String = ""
@@ -123,8 +100,48 @@ class LibManga : ConfigurableSource, HttpSource() {
         }
         .build()
 
-    override fun popularMangaRequest(page: Int) = GET("$baseUrl/login", headers)
+    // Latest
+    override fun latestUpdatesRequest(page: Int) = throw UnsupportedOperationException("Not used") // popularMangaRequest()
+    override fun fetchLatestUpdates(page: Int): Observable<MangasPage> {
+        if (csrfToken.isEmpty()) {
+            return client.newCall(popularMangaRequest(page))
+                .asObservableSuccess()
+                .flatMap { response ->
+                    // Obtain token
+                    val resBody = response.body!!.string()
+                    csrfToken = "_token\" content=\"(.*)\"".toRegex().find(resBody)!!.groups[1]!!.value
+                    return@flatMap fetchLatestMangaFromApi(page)
+                }
+        }
+        return fetchLatestMangaFromApi(page)
+    }
 
+    private fun fetchLatestMangaFromApi(page: Int): Observable<MangasPage> {
+        return client.newCall(POST("$baseUrl/latest-updates?page=$page", catalogHeaders()))
+            .asObservable().doOnNext { response ->
+                if (!response.isSuccessful) {
+                    response.close()
+                    if (response.code == 419) throw Exception("Для завершения авторизации необходимо перезапустить приложение с полной остановкой.") else throw Exception("HTTP error ${response.code}")
+                }
+            }
+            .map { response ->
+                latestUpdatesParse(response)
+            }
+    }
+
+    override fun latestUpdatesParse(response: Response): MangasPage {
+        val resBody = response.body!!.string()
+        val result = json.decodeFromString<JsonObject>(resBody)
+        val itemsLatest = result["data"]?.jsonArray?.map { popularMangaFromElement(it) }
+        if (itemsLatest != null) {
+            val hasNextPage = result["next_page_url"]?.jsonPrimitive?.contentOrNull != null
+            return MangasPage(itemsLatest, hasNextPage)
+        }
+        return MangasPage(emptyList(), false)
+    }
+
+    // Popular
+    override fun popularMangaRequest(page: Int) = GET("$baseUrl/login", headers)
     override fun fetchPopularManga(page: Int): Observable<MangasPage> {
         if (csrfToken.isEmpty()) {
             return client.newCall(popularMangaRequest(page))
@@ -141,7 +158,12 @@ class LibManga : ConfigurableSource, HttpSource() {
 
     private fun fetchPopularMangaFromApi(page: Int): Observable<MangasPage> {
         return client.newCall(POST("$baseUrl/filterlist?dir=desc&sort=views&page=$page", catalogHeaders()))
-            .asObservableSuccess()
+            .asObservable().doOnNext { response ->
+                if (!response.isSuccessful) {
+                    response.close()
+                    if (response.code == 419) throw Exception("Для завершения авторизации необходимо перезапустить приложение с полной остановкой.") else throw Exception("HTTP error ${response.code}")
+                }
+            }
             .map { response ->
                 popularMangaParse(response)
             }
@@ -152,7 +174,6 @@ class LibManga : ConfigurableSource, HttpSource() {
         val result = json.decodeFromString<JsonObject>(resBody)
         val items = result["items"]!!.jsonObject
         val popularMangas = items["data"]?.jsonArray?.map { popularMangaFromElement(it) }
-
         if (popularMangas != null) {
             val hasNextPage = items["next_page_url"]?.jsonPrimitive?.contentOrNull != null
             return MangasPage(popularMangas, hasNextPage)
@@ -160,16 +181,20 @@ class LibManga : ConfigurableSource, HttpSource() {
         return MangasPage(emptyList(), false)
     }
 
+    // Popular cross Latest
     private fun popularMangaFromElement(el: JsonElement) = SManga.create().apply {
+        val slug = el.jsonObject["slug"]!!.jsonPrimitive.content
         title = when {
             isEng.equals("rus") && el.jsonObject["rus_name"]?.jsonPrimitive?.content.orEmpty().isNotEmpty() -> el.jsonObject["rus_name"]!!.jsonPrimitive.content
             isEng.equals("eng") && el.jsonObject["eng_name"]?.jsonPrimitive?.content.orEmpty().isNotEmpty() -> el.jsonObject["eng_name"]!!.jsonPrimitive.content
             else -> el.jsonObject["name"]!!.jsonPrimitive.content
         }
-        thumbnail_url = baseUrl + el.jsonObject["covers"]!!.jsonObject["default"]!!.jsonPrimitive.content
-        url = "/" + el.jsonObject["slug"]!!.jsonPrimitive.content
+        thumbnail_url = if (el.jsonObject["covers"] != null) baseUrl + el.jsonObject["covers"]!!.jsonObject["default"]!!.jsonPrimitive.content
+        else baseUrl + "/uploads/cover/" + slug + "/cover/" + el.jsonObject["cover"]!!.jsonPrimitive.content + "_250x350.jpg"
+        url = "/$slug"
     }
 
+    // Details
     override fun mangaDetailsParse(response: Response): SManga {
         val document = response.asJsoup()
         val dataStr = document
@@ -194,8 +219,8 @@ class LibManga : ConfigurableSource, HttpSource() {
             rawAgeStop = "0+"
         }
 
-        val ratingValue = document.select(".media-rating.media-rating_lg div.media-rating__value").text().toFloat() * 2
-        val ratingVotes = document.select(".media-rating.media-rating_lg div.media-rating__votes").text()
+        val ratingValue = document.select(".media-rating__value").last().text().toFloat() * 2
+        val ratingVotes = document.select(".media-rating__votes").last().text()
         val ratingStar = when {
             ratingValue > 9.5 -> "★★★★★"
             ratingValue > 8.5 -> "★★★★✬"
@@ -215,7 +240,7 @@ class LibManga : ConfigurableSource, HttpSource() {
             isEng.equals("eng") && dataManga!!.jsonObject["engName"]?.jsonPrimitive?.content.orEmpty().isNotEmpty() -> dataManga.jsonObject["engName"]!!.jsonPrimitive.content
             else -> dataManga!!.jsonObject["name"]!!.jsonPrimitive.content
         }
-        manga.thumbnail_url = document.select(".media-sidebar__cover > img").attr("src")
+        manga.thumbnail_url = document.select(".media-header__cover").attr("src")
         manga.author = body.select("div.media-info-list__title:contains(Автор) + div").text()
         manga.artist = body.select("div.media-info-list__title:contains(Художник) + div").text()
         manga.status = if (document.html().contains("paper empty section")
@@ -246,6 +271,7 @@ class LibManga : ConfigurableSource, HttpSource() {
         return manga
     }
 
+    // Chapters
     override fun chapterListParse(response: Response): List<SChapter> {
         val document = response.asJsoup()
         val redirect = document.html()
@@ -374,6 +400,7 @@ class LibManga : ConfigurableSource, HttpSource() {
         }
     }
 
+    // Pages
     override fun pageListParse(response: Response): List<Page> {
         val document = response.asJsoup()
 
@@ -449,6 +476,7 @@ class LibManga : ConfigurableSource, HttpSource() {
 
     override fun imageUrlParse(response: Response): String = ""
 
+    // Workaround to allow "Open in browser" use the
     private fun searchMangaByIdRequest(id: String): Request {
         return GET("$baseUrl/$id", headers)
     }
@@ -472,6 +500,7 @@ class LibManga : ConfigurableSource, HttpSource() {
         }
     }
 
+    // Search
     override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
         if (csrfToken.isEmpty()) {
             val tokenResponse = client.newCall(popularMangaRequest(page)).execute()
@@ -568,6 +597,7 @@ class LibManga : ConfigurableSource, HttpSource() {
         return MangasPage(mangas, searchedMangas.hasNextPage)
     }
 
+    // Filters
     private class SearchFilter(name: String, val id: String) : Filter.TriState(name)
     private class CheckFilter(name: String, val id: String) : Filter.CheckBox(name)
 
