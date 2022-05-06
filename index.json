@@ -676,10 +676,10 @@
   {
     "name": "Tachiyomi: BILIBILI",
     "pkg": "eu.kanade.tachiyomi.extension.all.bilibili",
-    "apk": "tachiyomi-all.bilibili-v1.2.6.apk",
+    "apk": "tachiyomi-all.bilibili-v1.2.7.apk",
     "lang": "all",
-    "code": 6,
-    "version": "1.2.6",
+    "code": 7,
+    "version": "1.2.7",
     "nsfw": 0,
     "hasReadme": 1,
     "hasChangelog": 0,
@@ -14406,10 +14406,10 @@
   {
     "name": "Tachiyomi: Tapas",
     "pkg": "eu.kanade.tachiyomi.extension.en.tapastic",
-    "apk": "tachiyomi-en.tapastic-v1.2.15.apk",
+    "apk": "tachiyomi-en.tapastic-v1.2.16.apk",
     "lang": "en",
-    "code": 15,
-    "version": "1.2.15",
+    "code": 16,
+    "version": "1.2.16",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
@@ -19463,6 +19463,25 @@
     ]
   },
   {
+    "name": "Tachiyomi: Coven Scan",
+    "pkg": "eu.kanade.tachiyomi.extension.pt.covenscan",
+    "apk": "tachiyomi-pt.covenscan-v1.2.20.apk",
+    "lang": "pt-BR",
+    "code": 20,
+    "version": "1.2.20",
+    "nsfw": 1,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Coven Scan",
+        "lang": "pt-BR",
+        "id": "5558728935088189480",
+        "baseUrl": "https://covenscan.com"
+      }
+    ]
+  },
+  {
     "name": "Tachiyomi: Cronos Scan",
     "pkg": "eu.kanade.tachiyomi.extension.pt.cronosscan",
     "apk": "tachiyomi-pt.cronosscan-v1.2.21.apk",
@@ -19801,6 +19820,25 @@
         "lang": "pt-BR",
         "id": "5760104820645758917",
         "baseUrl": "https://gooffansub.com"
+      }
+    ]
+  },
+  {
+    "name": "Tachiyomi: Hela Scan",
+    "pkg": "eu.kanade.tachiyomi.extension.pt.helascan",
+    "apk": "tachiyomi-pt.helascan-v1.2.20.apk",
+    "lang": "pt-BR",
+    "code": 20,
+    "version": "1.2.20",
+    "nsfw": 1,
+    "hasReadme": 0,
+    "hasChangelog": 0,
+    "sources": [
+      {
+        "name": "Hela Scan",
+        "lang": "pt-BR",
+        "id": "6367416018545253525",
+        "baseUrl": "https://helascan.com"
       }
     ]
   },
@@ -22847,10 +22885,10 @@
   {
     "name": "Tachiyomi: Baimangu (Darpou)",
     "pkg": "eu.kanade.tachiyomi.extension.zh.baimangu",
-    "apk": "tachiyomi-zh.baimangu-v1.2.1.apk",
+    "apk": "tachiyomi-zh.baimangu-v1.2.2.apk",
     "lang": "zh",
-    "code": 1,
-    "version": "1.2.1",
+    "code": 2,
+    "version": "1.2.2",
     "nsfw": 0,
     "hasReadme": 0,
     "hasChangelog": 0,
