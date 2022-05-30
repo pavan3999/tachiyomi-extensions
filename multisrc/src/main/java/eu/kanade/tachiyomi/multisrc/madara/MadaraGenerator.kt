@@ -345,7 +345,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("NeatManga", "https://neatmanga.com", "en", overrideVersionCode = 2),
         SingleLang("NekoBreaker Scan", "https://nekobreakerscan.com", "pt-BR", overrideVersionCode = 1),
         SingleLang("NekoScan", "https://nekoscan.com", "en", overrideVersionCode = 2),
-        SingleLang("Neox Scanlator", "https://neoxscan.net", "pt-BR", overrideVersionCode = 13),
+        SingleLang("Neox Scanlator", "https://neoxscans.net", "pt-BR", overrideVersionCode = 14),
         SingleLang("Night Comic", "https://www.nightcomic.com", "en", overrideVersionCode = 1),
         SingleLang("Niji Translations", "https://niji-translations.com", "ar", overrideVersionCode = 1),
         SingleLang("Ninja Scan", "https://ninjascan.xyz", "pt-BR", overrideVersionCode = 1),
@@ -353,7 +353,6 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("NovelMic", "https://novelmic.com", "en", overrideVersionCode = 1),
         SingleLang("Novels Town", "https://novelstown.cyou", "ar"),
         SingleLang("Oh No Manga", "https://ohnomanga.com", "en", isNsfw = true),
-        SingleLang("Okamishi Scans", "https://geassscan.net", "pt-BR", pkgName = "geassscanlator", overrideVersionCode = 5),
         SingleLang("Olympus Scanlation", "https://olympusscanlation.com", "es"),
         SingleLang("Ow Scan", "https://owscan.com", "pt-BR", overrideVersionCode = 1),
         SingleLang("Paean Scans", "https://paeanscans.com", "en", overrideVersionCode = 1),
@@ -483,7 +482,8 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("مانجا عرب تيم Manga Arab Team", "https://mangaarbteam.com", "ar", className = "MangaArabTeam", overrideVersionCode = 1),
         SingleLang("مانجا ليك", "https://mangalek.com", "ar", className = "Mangalek", overrideVersionCode = 1),
         SingleLang("مانجا لينك", "https://mangalink.io", "ar", className = "MangaLinkio", overrideVersionCode = 2),
-    )
+        SingleLang("Ragnarok Scanlation", "https://ragnarokscanlation.com",  "es", className = "RagnarokScanlation"),
+        )
 
     companion object {
         @JvmStatic
