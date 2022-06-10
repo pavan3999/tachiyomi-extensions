@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.extension.zh.bilibilimanga
 
-import eu.kanade.tachiyomi.lib.ratelimit.SpecificHostRateLimitInterceptor
 import eu.kanade.tachiyomi.multisrc.bilibili.Bilibili
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliComicDto
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliIntl
@@ -21,9 +20,6 @@ class BilibiliManga : Bilibili(
 
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(::expiredTokenIntercept)
-        .addInterceptor(SpecificHostRateLimitInterceptor(baseUrl.toHttpUrl(), 1))
-        .addInterceptor(SpecificHostRateLimitInterceptor(CDN_URL.toHttpUrl(), 2))
-        .addInterceptor(SpecificHostRateLimitInterceptor(COVER_CDN_URL.toHttpUrl(), 2))
         .build()
 
     override fun headersBuilder() = Headers.Builder().apply {

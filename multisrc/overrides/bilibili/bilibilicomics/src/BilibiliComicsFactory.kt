@@ -1,6 +1,5 @@
 package eu.kanade.tachiyomi.extension.all.bilibilicomics
 
-import eu.kanade.tachiyomi.lib.ratelimit.SpecificHostRateLimitInterceptor
 import eu.kanade.tachiyomi.multisrc.bilibili.Bilibili
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliAccessToken
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliAccessTokenCookie
@@ -46,9 +45,6 @@ abstract class BilibiliComics(lang: String) : Bilibili(
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(::signedInIntercept)
         .addInterceptor(::expiredTokenIntercept)
-        .addInterceptor(SpecificHostRateLimitInterceptor(baseUrl.toHttpUrl(), 1))
-        .addInterceptor(SpecificHostRateLimitInterceptor(CDN_URL.toHttpUrl(), 2))
-        .addInterceptor(SpecificHostRateLimitInterceptor(COVER_CDN_URL.toHttpUrl(), 2))
         .build()
 
     override val signedIn: Boolean

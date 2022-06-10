@@ -16,7 +16,6 @@ import uy.kohesive.injekt.injectLazy
 /**
  * Rate limit requests ignore covers though
  */
-
 private val coverRegex = Regex("""/images/.*\.jpg""")
 
 /**

@@ -5,12 +5,12 @@ import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.preference.EditTextPreference
 import androidx.preference.PreferenceScreen
-import eu.kanade.tachiyomi.BuildConfig
-import eu.kanade.tachiyomi.lib.ratelimit.RateLimitInterceptor
+import eu.kanade.tachiyomi.AppInfo
 import eu.kanade.tachiyomi.multisrc.madara.Madara
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.POST
 import eu.kanade.tachiyomi.network.asObservable
+import eu.kanade.tachiyomi.network.interceptor.rateLimit
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -50,7 +50,7 @@ class NeoxScanlator :
         .readTimeout(1, TimeUnit.MINUTES)
         .addInterceptor(::titleCollectionIntercept)
         .addInterceptor(::obsoleteCheckIntercept)
-        .addInterceptor(RateLimitInterceptor(1, 3, TimeUnit.SECONDS))
+        .rateLimit(1, 2, TimeUnit.SECONDS)
         .build()
 
     override val altNameSelector = ".post-content_item:contains(Alternativo) .summary-content"
@@ -274,7 +274,7 @@ class NeoxScanlator :
         private const val REFERER = "https://google.com/"
 
         private const val DEFAULT_BASE_URL = "https://neoxscans.net"
-        private val BASE_URL_PREF_KEY = "base_url_${BuildConfig.VERSION_NAME}"
+        private val BASE_URL_PREF_KEY = "base_url_${AppInfo.getVersionName()}"
         private const val BASE_URL_PREF_TITLE = "URL da fonte"
         private const val BASE_URL_PREF_SUMMARY = "Para uso temporário. Quando você atualizar a " +
             "extensão, esta configuração será apagada."

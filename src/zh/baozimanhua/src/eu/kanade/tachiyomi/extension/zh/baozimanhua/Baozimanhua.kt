@@ -3,6 +3,7 @@ package eu.kanade.tachiyomi.extension.zh.baozimanhua
 import android.app.Application
 import android.content.SharedPreferences
 import androidx.preference.PreferenceScreen
+import eu.kanade.tachiyomi.AppInfo
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.asObservableSuccess
 import eu.kanade.tachiyomi.source.ConfigurableSource
@@ -22,6 +23,8 @@ import org.jsoup.nodes.Element
 import rx.Observable
 import uy.kohesive.injekt.Injekt
 import uy.kohesive.injekt.api.get
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
 
@@ -29,9 +32,8 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
 
     override val name = "包子漫画"
 
-    private val preferences: SharedPreferences by lazy {
+    private val preferences: SharedPreferences =
         Injekt.get<Application>().getSharedPreferences("source_$id", 0x0000)
-    }
 
     override val baseUrl = "https://${preferences.getString(MIRROR_PREF, MIRRORS[0])}"
 
@@ -40,7 +42,7 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
     override val supportsLatest = true
 
     override val client: OkHttpClient = network.cloudflareClient.newBuilder()
-        .addInterceptor(BannerInterceptor()).build()
+        .addInterceptor(BannerInterceptor).build()
 
     override fun chapterListSelector() = throw UnsupportedOperationException("Not used.")
 
@@ -51,7 +53,14 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
         } else {
             // chapters are listed oldest to newest in the source
             document.select(".l-box > .pure-g[id^=chapter] > div").reversed()
-        }.map { chapterFromElement(it) }
+        }.map { chapterFromElement(it) }.apply {
+            if (!isNewDateLogic) return@apply
+            val date = document.select("em").text()
+            if (date.contains('年')) {
+                this[0].date_upload = date.removePrefix("(").removeSuffix(" 更新)")
+                    .let { DATE_FORMAT.parse(it) }?.time ?: 0L
+            } // 否则要么是没有，要么必然是今天（格式如 "今天 xx:xx", "x小时前", "x分钟前"）可以偷懒直接用默认的获取时间
+        }
     }
 
     override fun chapterFromElement(element: Element): SChapter {
@@ -103,13 +112,12 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
                 "已完結" -> SManga.COMPLETED
                 else -> SManga.UNKNOWN
             }
-            // TODO: upload date by selector "em" in format "(2021年06月29日 更新)"
         }
     }
 
     override fun pageListParse(document: Document): List<Page> {
-        return document.select(".comic-contain > .chapter-img > img").mapIndexed { index, element ->
-            Page(index, imageUrl = element.attr("data-src").trim() + COMIC_IMAGE_SUFFIX)
+        return document.select(".comic-contain > amp-img").mapIndexed { index, element ->
+            Page(index, imageUrl = element.attr("src").trim() + BannerInterceptor.COMIC_IMAGE_SUFFIX)
         }
     }
 
@@ -145,27 +153,8 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
         return if (query.isNotEmpty()) {
             GET("$baseUrl/search?q=$query", headers)
         } else {
-            lateinit var tag: String
-            lateinit var region: String
-            lateinit var status: String
-            lateinit var start: String
-            filters.forEach { filter ->
-                when (filter) {
-                    is TagFilter -> {
-                        tag = filter.toUriPart()
-                    }
-                    is RegionFilter -> {
-                        region = filter.toUriPart()
-                    }
-                    is StatusFilter -> {
-                        status = filter.toUriPart()
-                    }
-                    is StartFilter -> {
-                        start = filter.toUriPart()
-                    }
-                }
-            }
-            GET("$baseUrl/classify?type=$tag&region=$region&state=$status&filter=$start&page=$page")
+            val parts = filters.filterIsInstance<UriPartFilter>().joinToString("&") { it.toUriPart() }
+            GET("$baseUrl/classify?page=$page&$parts", headers)
         }
     }
 
@@ -194,13 +183,14 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
         StartFilter()
     )
 
-    private open class UriPartFilter(displayName: String, val vals: Array<Pair<String, String>>) :
-        Filter.Select<String>(displayName, vals.map { it.first }.toTypedArray()) {
-        fun toUriPart() = vals[state].second
+    private open class UriPartFilter(name: String, val query: String, val vals: Array<Pair<String, String>>) :
+        Filter.Select<String>(name, vals.map { it.first }.toTypedArray()) {
+        fun toUriPart() = "$query=${vals[state].second}"
     }
 
     private class TagFilter : UriPartFilter(
         "标签",
+        "type",
         arrayOf(
             Pair("全部", "all"),
             Pair("都市", "dushi"),
@@ -271,6 +261,7 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
 
     private class RegionFilter : UriPartFilter(
         "地区",
+        "region",
         arrayOf(
             Pair("全部", "all"),
             Pair("国漫", "cn"),
@@ -282,6 +273,7 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
 
     private class StatusFilter : UriPartFilter(
         "进度",
+        "state",
         arrayOf(
             Pair("全部", "all"),
             Pair("连载中", "serial"),
@@ -291,6 +283,7 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
 
     private class StartFilter : UriPartFilter(
         "标题开头",
+        "filter",
         arrayOf(
             Pair("全部", "*"),
             Pair("ABCD", "ABCD"),
@@ -327,5 +320,14 @@ class Baozimanhua : ParsedHttpSource(), ConfigurableSource {
         private const val MIRROR_PREF_TITLE = "使用镜像网址"
         private const val MIRROR_PREF_SUMMARY = "使用镜像网址。重启软件生效。"
         private val MIRRORS = arrayOf("cn.baozimh.com", "cn.webmota.com")
+
+        private val DATE_FORMAT = SimpleDateFormat("yyyy年MM月dd日", Locale.ENGLISH)
+        private val isNewDateLogic = run {
+            val commitCount = AppInfo.getVersionName().substringAfter('-', "")
+            if (commitCount.isNotEmpty()) // Preview
+                commitCount.toInt() >= 4442
+            else // Stable
+                AppInfo.getVersionCode() >= 81
+        }
     }
 }
