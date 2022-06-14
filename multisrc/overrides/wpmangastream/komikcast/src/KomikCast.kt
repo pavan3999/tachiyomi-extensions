@@ -8,12 +8,18 @@ import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
 import eu.kanade.tachiyomi.source.model.SManga
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.jsonArray
+import kotlinx.serialization.json.jsonObject
 import okhttp3.Headers
 import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import uy.kohesive.injekt.injectLazy
 import java.util.concurrent.TimeUnit
 
 class KomikCast : WPMangaStream("Komik Cast", "https://komikcast.me", "id") {
@@ -151,7 +157,23 @@ class KomikCast : WPMangaStream("Komik Cast", "https://komikcast.me", "id") {
     }
 
     override fun pageListParse(document: Document): List<Page> {
-        return document.select("div#chapter_body .main-reading-area img.size-full")
+        var doc = document
+        var cssQuery = "div#chapter_body .main-reading-area img.size-full"
+        val imageListRegex = Regex("chapterImages = (.*) \\|\\|")
+        val imageListMatchResult = imageListRegex.find(document.toString())
+
+        if (imageListMatchResult != null) {
+            val imageListJson = imageListMatchResult.destructured.toList()[0]
+            val imageList = json.parseToJsonElement(imageListJson).jsonObject
+
+            var imageServer = "cdn"
+            if (!imageList.containsKey(imageServer)) imageServer = imageList.keys.first()
+            val imageElement = imageList[imageServer]!!.jsonArray.joinToString("")
+            doc = Jsoup.parse(json.decodeFromString(imageElement))
+            cssQuery = "img.size-full"
+        }
+
+        return doc.select(cssQuery)
             .mapIndexed { i, img -> Page(i, "", img.attr("abs:Src")) }
     }
 
@@ -167,4 +189,6 @@ class KomikCast : WPMangaStream("Komik Cast", "https://komikcast.me", "id") {
         Filter.Header("$name Project List page"),
         ProjectFilter()
     )
+
+    private val json: Json by injectLazy()
 }
