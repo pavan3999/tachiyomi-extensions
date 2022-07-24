@@ -10,10 +10,10 @@ class MadaraGenerator : ThemeSourceGenerator {
 
     override val themeClass = "Madara"
 
-    override val baseVersionCode: Int = 22
+    override val baseVersionCode: Int = 23
 
     override val sources = listOf(
-        MultiLang("Leviatan Scans", "https://leviatanscans.com", listOf("en", "es"), className = "LeviatanScansFactory", overrideVersionCode = 9),
+        MultiLang("Leviatan Scans", "https://leviatanscans.com", listOf("en", "es"), className = "LeviatanScansFactory", overrideVersionCode = 10),
         MultiLang("MangaForFree.net", "https://mangaforfree.net", listOf("en", "ko", "all"), isNsfw = true, className = "MangaForFreeFactory", pkgName = "mangaforfree", overrideVersionCode = 1),
         MultiLang("Manhwa18.cc", "https://manhwa18.cc", listOf("en", "ko", "all"), isNsfw = true, className = "Manhwa18CcFactory", pkgName = "manhwa18cc", overrideVersionCode = 2),
         MultiLang("Olympus Scanlation", "https://olympusscanlation.com", listOf("es", "pt-BR")),
@@ -367,7 +367,6 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("NeatManga", "https://neatmanga.com", "en", overrideVersionCode = 2),
         SingleLang("NekoBreaker Scan", "https://nekobreakerscan.com", "pt-BR", overrideVersionCode = 1),
         SingleLang("NekoScan", "https://nekoscan.com", "en", overrideVersionCode = 2),
-        SingleLang("Neox Scanlator", "https://neoxscans.net", "pt-BR", overrideVersionCode = 14),
         SingleLang("Night Comic", "https://www.nightcomic.com", "en", overrideVersionCode = 1),
         SingleLang("Niji Translations", "https://niji-translations.com", "ar", overrideVersionCode = 1),
         SingleLang("Ninja Scan", "https://ninjascan.xyz", "pt-BR", overrideVersionCode = 1),
@@ -448,7 +447,7 @@ class MadaraGenerator : ThemeSourceGenerator {
         SingleLang("Sweet Desire Scan", "https://sweetdesire.com.br", "pt-BR", isNsfw = true),
         SingleLang("Sweet Time Scan", "https://sweetscan.net", "pt-BR", overrideVersionCode = 2),
         SingleLang("TappyToon.Net", "https://tappytoon.net", "en", className = "Tappytoonnet"),
-        SingleLang("Tatakae Scan", "https://tatakaescan.xyz", "pt-BR", isNsfw = true, overrideVersionCode = 1),
+        SingleLang("Tatakae Scan", "https://tatakaescan.com", "pt-BR", isNsfw = true, overrideVersionCode = 2),
         SingleLang("Taurus Fansub", "https://taurusfansub.com", "es", isNsfw = false),
         SingleLang("TeenManhua", "https://teenmanhua.com", "en"),
         SingleLang("The Beginning After The End", "https://www.thebeginningaftertheend.fr", "fr"),
