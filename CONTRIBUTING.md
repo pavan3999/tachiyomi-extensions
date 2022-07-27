@@ -82,6 +82,8 @@ Some alternative steps can be followed to ignore "repo" branch and skip unrelate
     # allow a multisrc theme
     /multisrc/src/main/java/eu/kanade/tachiyomi/multisrc/<source>
     /multisrc/overrides/<source>
+    # or type the source name directly
+    <source>
     ```
 4. Configure remotes.
     ```bash
@@ -360,6 +362,12 @@ open class UriPartFilter(displayName: String, private val vals: Array<Pair<Strin
 Extensions can define URL intent filters by defining it inside a custom `AndroidManifest.xml` file.
 For an example, refer to [the NHentai module's `AndroidManifest.xml` file](https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master/src/all/nhentai/AndroidManifest.xml) and [its corresponding `NHUrlActivity` handler](https://github.com/tachiyomiorg/tachiyomi-extensions/blob/master/src/all/nhentai/src/eu/kanade/tachiyomi/extension/all/nhentai/NHUrlActivity.kt).
 
+To test if the URL intent filter is working as expected, you can try opening the website in a browser and navigating to the endpoint that was added as a filter or clicking a hyperlink. Alternatively, you can use the `adb` command below.
+
+```console
+$ adb shell am start -d "<your-link>" -a android.intent.action.VIEW
+```
+
 #### Renaming existing sources
 
 There is some cases where existing sources changes their name on the website. To correctly reflect these changes in the extension, you need to explicity set the `id` to the same old value, otherwise it will get changed by the new `name` value and users will be forced to migrate back to the source.
@@ -496,6 +504,9 @@ with open(f"{package}/src/{source}.kt", "w") as f:
     - For each time a source changes in a way that should the version increase, `overrideVersionCode` should be increased by one.
     - When a theme's default implementation changes, `baseVersionCode` should be increased, the initial value should be `1`.
     - For example, for a new theme with a new source, extention version code will be `0 + 0 + 1 = 1`.
+- `IntelijConfigurationGeneratorMainKt` should be run on creating or removing a multisrc theme.
+    - On removing a theme, you can manually remove the corresponding configuration in the `.run` folder instead.
+    - Be careful if you're using sparse checkout. If other configurations are accidentally removed, `git add` the file you want and `git restore` the others. Another choice is to allow `/multisrc/src/main/java/eu/kanade/tachiyomi/multisrc/*` before running the generator.
 
 ## Running
 
