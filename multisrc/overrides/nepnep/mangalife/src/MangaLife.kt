@@ -1,7 +1,6 @@
 package eu.kanade.tachiyomi.extension.en.mangalife
 
 import eu.kanade.tachiyomi.multisrc.nepnep.NepNep
-import eu.kanade.tachiyomi.network.interceptor.rateLimit
 import okhttp3.OkHttpClient
 import java.util.concurrent.TimeUnit
 
