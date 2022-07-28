@@ -11,7 +11,6 @@ import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliTag
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliUnlockedEpisode
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliUserEpisodes
 import eu.kanade.tachiyomi.network.POST
-import eu.kanade.tachiyomi.network.interceptor.rateLimitHost
 import eu.kanade.tachiyomi.source.SourceFactory
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
@@ -47,9 +46,6 @@ abstract class BilibiliComics(lang: String) : Bilibili(
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(::signedInIntercept)
         .addInterceptor(::expiredTokenIntercept)
-        .rateLimitHost(baseUrl.toHttpUrl(), 1)
-        .rateLimitHost(CDN_URL.toHttpUrl(), 2)
-        .rateLimitHost(COVER_CDN_URL.toHttpUrl(), 2)
         .build()
 
     override val signedIn: Boolean

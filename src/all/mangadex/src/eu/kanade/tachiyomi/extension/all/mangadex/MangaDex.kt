@@ -59,7 +59,6 @@ abstract class MangaDex(final override val lang: String, private val dexLang: St
         .add("User-Agent", "Tachiyomi " + System.getProperty("http.agent"))
 
     override val client = network.client.newBuilder()
-        .addNetworkInterceptor(mdRateLimitInterceptor)
         .addInterceptor(coverInterceptor)
         .addInterceptor(MdAtHomeReportInterceptor(network.client, headersBuilder().build()))
         .build()

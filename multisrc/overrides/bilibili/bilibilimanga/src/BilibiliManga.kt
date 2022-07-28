@@ -4,10 +4,8 @@ import eu.kanade.tachiyomi.multisrc.bilibili.Bilibili
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliComicDto
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliIntl
 import eu.kanade.tachiyomi.multisrc.bilibili.BilibiliTag
-import eu.kanade.tachiyomi.network.interceptor.rateLimitHost
 import eu.kanade.tachiyomi.source.model.SChapter
 import okhttp3.Headers
-import okhttp3.HttpUrl.Companion.toHttpUrl
 import okhttp3.OkHttpClient
 import okhttp3.Response
 
@@ -21,9 +19,6 @@ class BilibiliManga : Bilibili(
 
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(::expiredTokenIntercept)
-        .rateLimitHost(baseUrl.toHttpUrl(), 1)
-        .rateLimitHost(CDN_URL.toHttpUrl(), 2)
-        .rateLimitHost(COVER_CDN_URL.toHttpUrl(), 2)
         .build()
 
     override fun headersBuilder() = Headers.Builder().apply {
