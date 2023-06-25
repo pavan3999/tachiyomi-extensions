@@ -2,7 +2,6 @@ package eu.kanade.tachiyomi.extension.all.asurascans
 
 import android.app.Application
 import eu.kanade.tachiyomi.multisrc.mangathemesia.MangaThemesia
-import eu.kanade.tachiyomi.network.interceptor.rateLimit
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.Page
 import eu.kanade.tachiyomi.source.model.SChapter
@@ -39,7 +38,6 @@ open class AsuraScans(
         .addInterceptor(uaIntercept)
         .connectTimeout(10, TimeUnit.SECONDS)
         .readTimeout(30, TimeUnit.SECONDS)
-        .rateLimit(1, 3, TimeUnit.SECONDS)
         .build()
 
     override fun fetchChapterList(manga: SManga): Observable<List<SChapter>> {
