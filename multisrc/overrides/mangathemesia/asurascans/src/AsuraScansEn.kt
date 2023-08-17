@@ -23,7 +23,6 @@ import uy.kohesive.injekt.api.get
 import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.Locale
-import java.util.concurrent.TimeUnit
 
 class AsuraScansEn : MangaThemesia(
     "Asura Scans",
