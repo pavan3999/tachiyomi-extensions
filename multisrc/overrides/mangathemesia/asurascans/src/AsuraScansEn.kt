@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import androidx.preference.PreferenceScreen
 import androidx.preference.SwitchPreferenceCompat
 import eu.kanade.tachiyomi.multisrc.mangathemesia.MangaThemesia
-import eu.kanade.tachiyomi.network.interceptor.rateLimit
 import eu.kanade.tachiyomi.source.model.FilterList
 import eu.kanade.tachiyomi.source.model.MangasPage
 import eu.kanade.tachiyomi.source.model.Page
@@ -37,7 +36,6 @@ class AsuraScansEn : MangaThemesia(
 
     override val client: OkHttpClient = super.client.newBuilder()
         .addInterceptor(::urlChangeInterceptor)
-        .rateLimit(1, 3, TimeUnit.SECONDS)
         .build()
 
     override val seriesDescriptionSelector = "div.desc p, div.entry-content p, div[itemprop=description]:not(:has(p))"

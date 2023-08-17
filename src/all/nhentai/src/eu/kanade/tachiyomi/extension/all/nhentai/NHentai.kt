@@ -16,7 +16,6 @@ import eu.kanade.tachiyomi.lib.randomua.getPrefUAType
 import eu.kanade.tachiyomi.lib.randomua.setRandomUserAgent
 import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.asObservableSuccess
-import eu.kanade.tachiyomi.network.interceptor.rateLimit
 import eu.kanade.tachiyomi.source.ConfigurableSource
 import eu.kanade.tachiyomi.source.model.Filter
 import eu.kanade.tachiyomi.source.model.FilterList
@@ -61,7 +60,6 @@ open class NHentai(
                 customUA = preferences.getPrefCustomUA(),
                 filterInclude = listOf("chrome"),
             )
-            .rateLimit(4)
             .build()
     }
 
