@@ -7,6 +7,15 @@ on:
     paths-ignore:
       - '**.md'
       - '.github/workflows/issue_moderator.yml'
+  # Manual trigger
+  workflow_dispatch:
+    inputs:
+      git-ref:
+        description: Git Ref (Optional)
+        required: false
+      dry-run:
+        description: Creates a draft release
+        required: false
 
 concurrency:
   group: ${{ github.workflow }}
