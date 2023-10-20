@@ -1,20 +1,17 @@
 package eu.kanade.tachiyomi.extension.es.yugenmangas
 
+import android.app.Application
+import android.content.SharedPreferences
 import eu.kanade.tachiyomi.multisrc.heancms.Genre
-import eu.kanade.tachiyomi.multisrc.heancms.GenreFilter
 import eu.kanade.tachiyomi.multisrc.heancms.HeanCms
-import eu.kanade.tachiyomi.multisrc.heancms.HeanCmsSeriesDto
-import eu.kanade.tachiyomi.multisrc.heancms.SortByFilter
-import eu.kanade.tachiyomi.multisrc.heancms.StatusFilter
-import eu.kanade.tachiyomi.network.GET
 import eu.kanade.tachiyomi.network.interceptor.rateLimitHost
-import eu.kanade.tachiyomi.source.model.FilterList
-import eu.kanade.tachiyomi.source.model.Page
-import eu.kanade.tachiyomi.source.model.SChapter
-import eu.kanade.tachiyomi.util.asJsoup
 import okhttp3.HttpUrl.Companion.toHttpUrl
-import okhttp3.Request
+import okhttp3.Interceptor
+import okhttp3.ProtocolException
 import okhttp3.Response
+import uy.kohesive.injekt.Injekt
+import uy.kohesive.injekt.api.get
+import java.io.IOException
 import java.text.SimpleDateFormat
 import java.util.TimeZone
 import java.util.concurrent.TimeUnit
@@ -22,7 +19,7 @@ import java.util.concurrent.TimeUnit
 class YugenMangas :
     HeanCms(
         "YugenMangas",
-        "https://yugenmangas.lat",
+        "https://yugenmangas.net",
         "es",
         "https://api.yugenmangas.net",
     ) {
@@ -30,91 +27,76 @@ class YugenMangas :
     // Site changed from Madara to HeanCms.
     override val versionId = 2
 
+    override val baseUrl by lazy { getPrefBaseUrl() }
+
+    private val preferences by lazy {
+        Injekt.get<Application>().getSharedPreferences("source_$id", 0x0000)
+    }
+
+    private var lastDomain = ""
+
+    private fun domainChangeIntercept(chain: Interceptor.Chain): Response {
+        val request = chain.request()
+
+        if (!request.url.host.startsWith("yugenmangas")) {
+            return chain.proceed(request)
+        }
+
+        if (lastDomain.isNotEmpty()) {
+            val newUrl = request.url.newBuilder()
+                .host(preferences.baseUrlHost)
+                .build()
+
+            return chain.proceed(
+                request.newBuilder()
+                    .url(newUrl)
+                    .build(),
+            )
+        }
+
+        val response = try {
+            chain.proceed(request)
+        } catch (e: ProtocolException) {
+            if (e.message?.contains("Too many follow-up requests") == true) {
+                throw IOException("No se pudo obtener la nueva URL del sitio")
+            } else {
+                throw e
+            }
+        }
+
+        if (request.url.host == response.request.url.host) return response
+
+        response.close()
+
+        preferences.baseUrlHost = response.request.url.host
+
+        lastDomain = request.url.host
+
+        val newUrl = request.url.newBuilder()
+            .host(response.request.url.host)
+            .build()
+
+        return chain.proceed(
+            request.newBuilder()
+                .url(newUrl)
+                .build(),
+        )
+    }
+
+    override val slugStrategy = SlugStrategy.ID
+    override val useNewQueryEndpoint = true
+
     override val client = super.client.newBuilder()
         .connectTimeout(60, TimeUnit.SECONDS)
         .readTimeout(90, TimeUnit.SECONDS)
         .rateLimitHost(apiUrl.toHttpUrl(), 2, 3)
+        .addInterceptor(::domainChangeIntercept)
         .build()
 
     override val coverPath: String = ""
 
     override val dateFormat: SimpleDateFormat = super.dateFormat.apply {
         timeZone = TimeZone.getTimeZone("UTC")
-    }
-
-    override fun popularMangaRequest(page: Int): Request {
-        val url = "$apiUrl/query".toHttpUrl().newBuilder()
-            .addQueryParameter("query_string", "")
-            .addQueryParameter("series_status", "All")
-            .addQueryParameter("order", "desc")
-            .addQueryParameter("orderBy", "total_views")
-            .addQueryParameter("series_type", "Comic")
-            .addQueryParameter("page", page.toString())
-            .addQueryParameter("perPage", "12")
-            .addQueryParameter("tags_ids", "[]")
-
-        return GET(url.build(), headers)
-    }
-
-    override fun latestUpdatesRequest(page: Int): Request {
-        val url = "$apiUrl/query".toHttpUrl().newBuilder()
-            .addQueryParameter("query_string", "")
-            .addQueryParameter("series_status", "All")
-            .addQueryParameter("order", "desc")
-            .addQueryParameter("orderBy", "latest")
-            .addQueryParameter("series_type", "Comic")
-            .addQueryParameter("page", page.toString())
-            .addQueryParameter("perPage", "12")
-            .addQueryParameter("tags_ids", "[]")
-
-        return GET(url.build(), headers)
-    }
-
-    override fun searchMangaRequest(page: Int, query: String, filters: FilterList): Request {
-        val sortByFilter = filters.firstInstanceOrNull<SortByFilter>()
-        val statusFilter = filters.firstInstanceOrNull<StatusFilter>()
-
-        val tagIds = filters.firstInstanceOrNull<GenreFilter>()?.state.orEmpty()
-            .filter(Genre::state)
-            .map(Genre::id)
-            .joinToString(",", prefix = "[", postfix = "]")
-
-        val url = "$apiUrl/query".toHttpUrl().newBuilder()
-            .addQueryParameter("query_string", query)
-            .addQueryParameter("series_status", statusFilter?.selected?.value ?: "All")
-            .addQueryParameter("order", if (sortByFilter?.state?.ascending == true) "asc" else "desc")
-            .addQueryParameter("orderBy", sortByFilter?.selected ?: "total_views")
-            .addQueryParameter("series_type", "Comic")
-            .addQueryParameter("page", page.toString())
-            .addQueryParameter("perPage", "12")
-            .addQueryParameter("tags_ids", tagIds)
-
-        return GET(url.build(), headers)
-    }
-
-    override fun chapterListParse(response: Response): List<SChapter> {
-        val result = response.parseAs<HeanCmsSeriesDto>()
-
-        val currentTimestamp = System.currentTimeMillis()
-
-        return result.seasons.orEmpty()
-            .flatMap { it.chapters.orEmpty() }
-            .filterNot { it.price == 1 }
-            .map { it.toSChapter(result.slug, dateFormat) }
-            .filter { it.date_upload <= currentTimestamp }
-    }
-
-    override fun pageListRequest(chapter: SChapter) = GET(baseUrl + chapter.url, headers)
-
-    override fun pageListParse(response: Response): List<Page> {
-        val document = response.asJsoup()
-
-        val images = document.selectFirst("div.min-h-screen > div.container > p.items-center")
-
-        return images?.select("img").orEmpty().mapIndexed { i, img ->
-            val imageUrl = if (img.hasClass("lazy")) img.absUrl("data-src") else img.absUrl("src")
-            Page(i, "", imageUrl)
-        }
     }
 
     override fun getGenreList(): List<Genre> = listOf(
@@ -167,4 +149,17 @@ class YugenMangas :
         Genre("Yaoi", 43),
         Genre("Yuri", 44),
     )
+
+    companion object {
+        private const val defaultBaseUrlHost = "yugenmangas.net"
+        private const val BASE_URL_PREF = "prefOverrideBaseUrl"
+    }
+
+    private var SharedPreferences.baseUrlHost
+        get() = getString(BASE_URL_PREF, defaultBaseUrlHost) ?: defaultBaseUrlHost
+        set(newHost) {
+            edit().putString(BASE_URL_PREF, newHost).commit()
+        }
+
+    private fun getPrefBaseUrl(): String = preferences.baseUrlHost.let { "https://$it" }
 }
