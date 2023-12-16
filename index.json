@@ -8809,7 +8809,7 @@
         "name": "Cypher Scans",
         "lang": "en",
         "id": "4753434956961952960",
-        "baseUrl": "https://cypherscans.xyz/",
+        "baseUrl": "https://cypherscans.xyz",
         "versionId": 1,
         "hasCloudflare": 1
       }
